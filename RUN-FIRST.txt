@@ -1,0 +1,9 @@
+DRAW YOUR AFRICA — ENHANCED EDITION
+
+1. Open this folder in VS Code.
+2. Open index.html.
+3. Right-click index.html -> Open with Live Server (recommended).
+4. Click Play Game.
+
+The full redesign prompt is in ENHANCED-REDESIGN-PROMPT.md.
+Implementation notes are in IMPLEMENTATION-NOTES.md.
