@@ -1,92 +1,137 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Draw the Map | East Africa</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header>
-  <div class="logo">🗺️ Draw the Map</div>
-  <div class="stats">
-    <span>LEVEL <b>1</b></span>
-    <span>PROGRESS <b id="progress">0/8</b></span>
-    <span>SCORE <b id="score">0</b></span>
-    <span class="timer">TIME <b id="time">60</b></span>
-  </div>
-</header>
-
-<main>
-<section id="menu" class="screen">
-  <div class="hero">
-    <div class="globe">🌍</div>
-    <small>EAST AFRICA • EDUCATIONAL GEOGRAPHY GAME</small>
-    <h1>Can you <em>draw the map?</em></h1>
-    <p>Drag the actual country-shaped map pieces onto their correct locations. Learn geography, beat the clock, build your map, and unlock the continent.</p>
-    <div class="menu-buttons">
-      <button id="play" class="primary">▶ Play Game</button>
-      <button id="how" class="secondary">❓ How to Play</button>
-    </div>
-    <button id="soundMenu" class="sound">🔊 Sound ON</button>
-  </div>
-</section>
-
-<section id="game" class="screen hidden">
-  <div class="game-title">
-    <div><small>EAST AFRICA • LEVEL 1</small><h2>Let's build East Africa!</h2></div>
-    <div class="controls"><button id="soundGame" class="sound">🔊 Sound ON</button><button id="settings" class="secondary">⚙ Settings</button><button id="restart" class="secondary">↻ Restart</button></div>
-  </div>
-
-  <div class="game-grid">
-    <aside class="pieces-panel">
-      <h3>Country Pieces</h3>
-      <p>Drag the <strong>map shape</strong>, not the name.</p>
-      <div id="pieces"></div>
-      <div class="streak" id="streak">🔥 Streak: 0</div>
-    </aside>
-    <section class="map-panel">
-      <div class="map-head"><strong>East Africa Blueprint</strong><span id="message">Pick up any country shape.</span></div>
-      <div class="map">
-        <svg id="board" viewBox="0 0 760 620"></svg>
-        <div class="north">N<br>↑</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Draw the Map | Africa</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">🗺️ Draw the Map</div>
+      <div class="stats">
+        <span>LEVEL <b>1</b></span>
+        <span>PROGRESS <b id="progress">0/8</b></span>
+        <span>SCORE <b id="score">0</b></span>
+        <span class="timer">TIME <b id="time">60</b></span>
       </div>
-    </section>
-  </div>
-</section>
-</main>
+    </header>
 
-<div id="howModal" class="modal hidden"><div class="card">
-  <button class="close" data-close="howModal">×</button>
-  <div class="big">🎮</div><h2>How to Play</h2>
-  <p>1. Choose a country-shaped piece.</p><p>2. Drag the shape to its matching position.</p><p>3. Correct pieces snap into the map.</p><p>4. Wrong placements gently shake and return.</p><p>5. Beat the timer and complete all countries.</p>
-  <button class="primary" data-close="howModal">Got it!</button>
-</div></div>
+    <main>
+      <section id="menu" class="screen">
+        <div class="hero">
+          <div class="globe">🌍</div>
+          <small>AFRICA • GEOGRAPHY CHALLENGE</small>
+          <h1>Can you <em>build Africa?</em></h1>
+          <p>
+            Drag the country pieces into the correct places on the African map.
+            Fill the continent, beat the timer, and complete the whole map.
+          </p>
+          <div class="menu-buttons">
+            <button id="play" class="primary">▶ Play Game</button>
+            <button id="how" class="secondary">❓ How to Play</button>
+          </div>
+          <button id="soundMenu" class="sound">🔊 Sound ON</button>
+        </div>
+      </section>
 
-<div id="settingsModal" class="modal hidden"><div class="card">
-  <button class="close" data-close="settingsModal">×</button>
-  <div class="big">🎚️</div><h2>Sound Settings</h2>
-  <label class="volume-label">🔊 Volume <b id="volumeValue">70%</b></label>
-  <input id="volume" type="range" min="0" max="100" value="70">
-  <p class="muted">Your volume preference is saved automatically.</p>
-  <button class="primary" data-close="settingsModal">Done</button>
-</div></div>
+      <section id="game" class="screen hidden">
+        <div class="game-title">
+          <div>
+            <small>AFRICA • LEVEL 1</small>
+            <h2>Let's build Africa!</h2>
+          </div>
+          <div class="controls">
+            <button id="soundGame" class="sound">🔊 Sound ON</button
+            ><button id="settings" class="secondary">⚙ Settings</button
+            ><button id="restart" class="secondary">↻ Restart</button>
+          </div>
+        </div>
 
-<div id="timeUp" class="modal hidden"><div class="card">
-  <div class="big">⏰</div><small>TIME'S UP!</small><h2>Try again!</h2>
-  <p>You placed <strong id="timeProgress">0 / 8</strong> countries.</p>
-  <div class="modal-buttons"><button id="tryAgain" class="primary">↻ Try Again</button><button id="backMenu" class="secondary">⌂ Back to Menu</button></div>
-</div></div>
+        <div class="game-grid">
+          <aside class="pieces-panel">
+            <h3>Country Pieces</h3>
+            <p>Drag the <strong>map shape</strong> into the African outline.</p>
+            <div id="pieces"></div>
+            <div class="streak" id="streak">🔥 Streak: 0</div>
+          </aside>
+          <section class="map-panel">
+            <div class="map-head">
+              <strong>Africa Map</strong
+              ><span id="message">Pick up any country shape and place it inside Africa.</span>
+            </div>
+            <div class="map">
+              <svg id="board" viewBox="0 0 760 620"></svg>
+              <div class="north">N<br />↑</div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
 
-<div id="win" class="modal hidden"><div class="card win-card">
-  <div class="big">🎉</div><small>EAST AFRICA COMPLETE!</small><h2>You drew East Africa!</h2>
-  <p>Excellent work. You discovered the location and shape of every country.</p>
-  <div class="final">🏆 Final Score: <strong id="finalScore">0</strong></div>
-  <button id="playAgain" class="primary">🌍 Play Again</button>
-</div></div>
+    <div id="howModal" class="modal hidden">
+      <div class="card">
+        <button class="close" data-close="howModal">×</button>
+        <div class="big">🎮</div>
+        <h2>How to Play</h2>
+        <p>1. Choose a country-shaped piece.</p>
+        <p>2. Drag the shape to its matching position.</p>
+        <p>3. Correct pieces snap into the map.</p>
+        <p>4. Wrong placements gently shake and return.</p>
+        <p>5. Beat the timer and complete all countries.</p>
+        <button class="primary" data-close="howModal">Got it!</button>
+      </div>
+    </div>
 
-<div id="toast" class="toast"></div>
-<footer>Draw it. Learn it. Own Africa. 🌍 • HTML + CSS + JavaScript + Web Audio API</footer>
-<script src="script.js"></script>
-</body>
+    <div id="settingsModal" class="modal hidden">
+      <div class="card">
+        <button class="close" data-close="settingsModal">×</button>
+        <div class="big">🎚️</div>
+        <h2>Sound Settings</h2>
+        <label class="volume-label"
+          >🔊 Volume <b id="volumeValue">70%</b></label
+        >
+        <input id="volume" type="range" min="0" max="100" value="70" />
+        <p class="muted">Your volume preference is saved automatically.</p>
+        <button class="primary" data-close="settingsModal">Done</button>
+      </div>
+    </div>
+
+    <div id="timeUp" class="modal hidden">
+      <div class="card">
+        <div class="big">⏰</div>
+        <small>TIME'S UP!</small>
+        <h2>Try again!</h2>
+        <p>You placed <strong id="timeProgress">0 / 8</strong> countries.</p>
+        <div class="modal-buttons">
+          <button id="tryAgain" class="primary">↻ Try Again</button
+          ><button id="backMenu" class="secondary">⌂ Back to Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="win" class="modal hidden">
+      <div class="card win-card">
+        <div class="big">🎉</div>
+        <small>AFRICA COMPLETE!</small>
+        <h2>You built Africa!</h2>
+        <p>
+          Excellent work. You discovered the shapes and places across the
+          continent.
+        </p>
+        <div class="final">
+          🏆 Final Score: <strong id="finalScore">0</strong>
+        </div>
+        <button id="playAgain" class="primary">🌍 Play Again</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <footer>
+      Draw it. Learn it. Own Africa. 🌍 • HTML + CSS + JavaScript + Web Audio
+      API
+    </footer>
+    <script src="script.js"></script>
+  </body>
 </html>
+ thi
