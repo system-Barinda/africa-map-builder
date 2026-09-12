@@ -1,0 +1,199 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --pink: #ff00a8;
+  --pink-bright: #ff00b7;
+  --cyan: #18f7ff;
+  --cyan-dark: #087f83;
+  --bg: #000;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+.game-shell {
+  position: relative;
+  width: min(100vw, 480px);
+  height: min(100vh, 860px);
+  min-height: 620px;
+  overflow: hidden;
+  background: #000;
+  touch-action: none;
+}
+
+#game {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.moves {
+  position: absolute;
+  top: 17px;
+  left: 20px;
+  color: var(--cyan);
+  font-size: 31px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(24,247,255,.15);
+}
+
+.undo {
+  pointer-events: auto;
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--cyan);
+  font-size: 39px;
+  font-weight: 700;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  transform: rotate(-18deg);
+}
+
+.undo:active {
+  transform: rotate(-18deg) scale(.88);
+}
+
+.level {
+  position: absolute;
+  top: 207px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--pink);
+  font-size: 61px;
+  line-height: 1;
+  font-weight: 800;
+  z-index: 3;
+}
+
+.controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 38px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.control {
+  width: 60px;
+  height: 88px;
+  border: 0;
+  border-radius: 19px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: -7px;
+  font-family: Arial, sans-serif;
+  line-height: 20px;
+  transition: transform .08s ease;
+}
+
+.control:active {
+  transform: scale(.93);
+}
+
+.control span {
+  display: block;
+  height: 17px;
+  font-size: 39px;
+  font-weight: 900;
+}
+
+.down {
+  color: #000;
+  background: #087e82;
+}
+
+.up {
+  color: #000;
+  background: var(--cyan);
+}
+
+.play {
+  width: 70px;
+  height: 58px;
+  border: 0;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+}
+
+.play span {
+  position: absolute;
+  left: 18px;
+  top: 8px;
+  width: 0;
+  height: 0;
+  border-top: 21px solid transparent;
+  border-bottom: 21px solid transparent;
+  border-left: 37px solid var(--pink);
+  filter: drop-shadow(0 0 3px rgba(255,0,168,.2));
+}
+
+.play:active span {
+  transform: scale(.9);
+}
+
+.message {
+  position: absolute;
+  left: 50%;
+  bottom: 142px;
+  transform: translate(-50%, 10px);
+  color: var(--cyan);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity .25s ease, transform .25s ease;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.message.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-height: 700px) {
+  .level { top: 172px; }
+  .controls { bottom: 18px; }
+  .message { bottom: 112px; }
+}
+
+@media (min-width: 481px) {
+  .game-shell {
+    box-shadow: 0 0 50px rgba(0,255,255,.03);
+  }
+}
