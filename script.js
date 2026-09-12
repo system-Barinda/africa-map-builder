@@ -1,0 +1,22 @@
+const C=[
+{id:"uganda",name:"Uganda",color:"#ef75aa",d:"M350 142L390 132L421 151L414 190L380 202L345 185Z"},
+{id:"kenya",name:"Kenya",color:"#f4a24f",d:"M420 145L466 130L505 151L526 190L501 238L463 229L430 196Z"},
+{id:"rwanda",name:"Rwanda",color:"#7d9de8",d:"M330 229L351 220L367 234L359 257L337 261L326 245Z"},
+{id:"burundi",name:"Burundi",color:"#8ccf83",d:"M310 265L336 258L351 274L344 300L319 303L306 286Z"},
+{id:"tanzania",name:"Tanzania",color:"#e9c74d",d:"M349 258L393 236L438 249L469 287L454 342L421 379L379 363L354 327L337 294Z"},
+{id:"south-sudan",name:"South Sudan",color:"#9b7bd2",d:"M350 91L398 79L437 91L459 124L438 151L400 146L373 158L346 135Z"},
+{id:"ethiopia",name:"Ethiopia",color:"#5db8b1",d:"M438 86L491 72L545 89L568 120L550 155L515 164L483 151L455 129Z"},
+{id:"somalia",name:"Somalia",color:"#ee806f",d:"M553 145L590 120L613 133L604 180L579 224L555 257L535 238L551 199Z"}];
+const centers={uganda:[380,169],kenya:[474,185],rwanda:[347,241],burundi:[329,283],tanzania:[404,305],"south-sudan":[402,118],ethiopia:[506,116],somalia:[570,185]};
+const board=document.getElementById("board"),pieces=document.getElementById("pieces"),targets=document.createElementNS("http://www.w3.org/2000/svg","g");
+board.appendChild(targets);let placed=0,score=0;
+function el(tag){return document.createElementNS("http://www.w3.org/2000/svg",tag)}
+function draw(){targets.innerHTML="";C.forEach(c=>{let p=el("path");p.setAttribute("d",c.d);p.classList.add("target");p.dataset.id=c.id;p.addEventListener("dragover",e=>{e.preventDefault();p.classList.add("over")});p.addEventListener("dragleave",()=>p.classList.remove("over"));p.addEventListener("drop",e=>{e.preventDefault();p.classList.remove("over");check(e.dataTransfer.getData("id"),c.id,p)});targets.appendChild(p);let t=el("text");t.setAttribute("x",centers[c.id][0]);t.setAttribute("y",centers[c.id][1]);t.classList.add("target-text");t.textContent=c.name;targets.appendChild(t)})}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function render(){pieces.innerHTML="";shuffle(C).forEach(c=>{let q=document.createElement("div");q.className="piece";q.draggable=true;q.dataset.id=c.id;let s=el("svg");s.setAttribute("viewBox","290 60 340 330");let p=el("path");p.setAttribute("d",c.d);p.setAttribute("fill",c.color);p.setAttribute("stroke","#5d4550");p.setAttribute("stroke-width","3");p.setAttribute("stroke-linejoin","round");s.appendChild(p);q.appendChild(s);let l=document.createElement("label");l.textContent="MAP SHAPE";q.appendChild(l);q.addEventListener("dragstart",e=>{e.dataTransfer.setData("id",c.id);q.classList.add("dragging")});q.addEventListener("dragend",()=>q.classList.remove("dragging"));touch(q,c.id);pieces.appendChild(q)})}
+function check(a,b,target){if(a===b){let q=document.querySelector(`[data-id="${a}"]`);if(q.classList.contains("placed"))return;q.classList.add("placed");target.classList.add("correct");placed++;score+=100;update();document.getElementById("msg").textContent=`✓ Correct! ${C.find(x=>x.id===b).name} is in place.`;document.getElementById("msg").style.color="#36a269";if(placed===C.length)setTimeout(win,500)}else{target.classList.add("shake");setTimeout(()=>target.classList.remove("shake"),400);document.getElementById("msg").textContent="Not quite—try matching the shape to its location.";document.getElementById("msg").style.color="#c6246d"}}
+function touch(q,id){let active=false;q.addEventListener("touchstart",e=>{if(q.classList.contains("placed"))return;active=true;q.classList.add("dragging");e.preventDefault()},{passive:false});q.addEventListener("touchmove",e=>{if(active)e.preventDefault()},{passive:false});q.addEventListener("touchend",e=>{if(!active)return;active=false;q.classList.remove("dragging");let t=e.changedTouches[0],x=document.elementFromPoint(t.clientX,t.clientY),target=x&&x.closest(".target");if(target)check(id,target.dataset.id,target)},{passive:false})}
+function update(){document.getElementById("progress").textContent=`${placed}/${C.length}`;document.getElementById("score").textContent=score}
+function reset(){placed=0;score=0;document.getElementById("msg").textContent="Start with any country shape.";document.getElementById("msg").style.color="#746c73";document.getElementById("win").classList.add("hidden");draw();render();update()}
+function win(){document.getElementById("final").textContent=score;document.getElementById("win").classList.remove("hidden")}
+document.getElementById("reset").onclick=reset;document.getElementById("again").onclick=reset;reset();
