@@ -1,37 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Orbit 9 — Rotation Puzzle</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>ORBIT — Neon Logic Puzzle</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="game-shell">
-    <canvas id="game" aria-label="Orbit rotation puzzle game"></canvas>
+<div id="app">
+  <canvas id="game"></canvas>
 
-    <div class="hud">
-      <div class="moves" id="moves">12</div>
-      <button class="undo" id="undo" aria-label="Undo last move">↶</button>
-      <div class="level" id="level">9</div>
+  <section id="startScreen" class="screen">
+    <div class="brand">ORBIT</div>
+    <div class="tagline">ROTATE. THINK. ESCAPE.</div>
+    <div class="preview-orbit"><span class="preview-ball"></span><span class="preview-core"></span></div>
+    <button id="startGame" class="primary">PLAY</button>
+    <button id="dailyFromStart" class="secondary">DAILY CHALLENGE</button>
+    <div class="best-line">Best score: <b id="startBest">0</b></div>
+  </section>
+
+  <section id="levelScreen" class="screen hidden">
+    <div class="panel-head">
+      <button class="icon-btn" data-back>←</button>
+      <div><b>LEVELS</b><small>MASTER THE ORBITS</small></div>
+      <button class="icon-btn" id="levelSound">♪</button>
     </div>
+    <div id="levelGrid" class="level-grid"></div>
+  </section>
 
-    <div class="controls">
-      <button class="control down" id="leftBtn" aria-label="Rotate counter-clockwise">
-        <span>⌄</span><span>⌄</span><span>⌄</span>
-      </button>
-
-      <button class="play" id="playBtn" aria-label="Start game">
-        <span></span>
-      </button>
-
-      <button class="control up" id="rightBtn" aria-label="Rotate clockwise">
-        <span>⌃</span><span>⌃</span><span>⌃</span>
-      </button>
+  <section id="shopScreen" class="screen hidden">
+    <div class="panel-head">
+      <button class="icon-btn" data-back>←</button>
+      <div><b>THEMES</b><small>SPEND YOUR ORBS</small></div>
+      <div class="coin-pill">◆ <span id="shopCoins">0</span></div>
     </div>
+    <div id="shopGrid" class="shop-grid"></div>
+  </section>
 
-    <div class="message" id="message"></div>
-  </main>
-  <script src="script.js"></script>
+  <section id="dailyScreen" class="screen hidden">
+    <div class="panel-head">
+      <button class="icon-btn" data-back>←</button>
+      <div><b>DAILY ORBIT</b><small id="dailyDate"></small></div>
+    </div>
+    <div class="daily-card">
+      <div class="daily-title">TODAY'S PUZZLE</div>
+      <div class="daily-number" id="dailyNumber">01</div>
+      <p>Everyone gets the same challenge. Beat your best move count.</p>
+      <div class="daily-stats">
+        <span>BEST <b id="dailyBest">—</b></span>
+        <span>STREAK <b id="dailyStreak">0</b></span>
+      </div>
+      <button id="playDaily" class="primary">PLAY DAILY</button>
+    </div>
+  </section>
+
+  <section id="gameUI" class="hidden">
+    <header class="hud">
+      <button id="homeBtn" class="hud-btn">⌂</button>
+      <div class="moves-box"><b id="moves">12</b><small>MOVES</small></div>
+      <div class="level-box"><b id="level">1</b><small>LEVEL</small></div>
+      <button id="muteBtn" class="hud-btn">♪</button>
+    </header>
+    <div class="progress"><span id="progressBar"></span></div>
+    <div id="hint" class="hint">GET TO THE CYAN GATE</div>
+    <div class="game-buttons">
+      <button id="leftBtn" class="rotate-btn left" aria-label="Rotate left">‹</button>
+      <button id="playPause" class="play-btn">▶</button>
+      <button id="rightBtn" class="rotate-btn right" aria-label="Rotate right">›</button>
+    </div>
+    <button id="undoBtn" class="undo-btn">↶</button>
+  </section>
+
+  <section id="resultScreen" class="screen hidden">
+    <div class="result-card">
+      <div id="resultKicker" class="result-kicker">LEVEL COMPLETE</div>
+      <div id="resultTitle" class="result-title">NICE!</div>
+      <div id="stars" class="stars">☆☆☆</div>
+      <div class="result-stats">
+        <div><span>MOVES</span><b id="resultMoves">0</b></div>
+        <div><span>BEST</span><b id="resultBest">0</b></div>
+        <div><span>ORBS</span><b id="resultCoins">+0</b></div>
+      </div>
+      <div class="result-actions">
+        <button id="retryBtn" class="secondary">RETRY</button>
+        <button id="nextBtn" class="primary">NEXT →</button>
+      </div>
+    </div>
+  </section>
+
+  <nav id="bottomNav" class="bottom-nav hidden">
+    <button data-nav="levels">◈<span>LEVELS</span></button>
+    <button data-nav="daily">◆<span>DAILY</span></button>
+    <button data-nav="shop">✦<span>THEMES</span></button>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
