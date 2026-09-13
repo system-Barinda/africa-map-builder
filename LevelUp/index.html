@@ -81,50 +81,42 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
   font-size:.8rem;color:#a0b8cc}
 .onboard .k{font-size:1.7rem}
 
-/* Credits / copyright footer */
 .studio-credit{
-  position:absolute;
-  left:0;right:0;bottom:14px;
-  text-align:center;
-  font-size:.78rem;
-  font-weight:500;
-  letter-spacing:.4px;
-  color:#a0b8cc;
-  z-index:55;
-  pointer-events:none;
-  text-shadow:0 1px 3px rgba(0,0,0,.6);
+  position:absolute;left:0;right:0;bottom:14px;text-align:center;
+  font-size:.78rem;font-weight:500;letter-spacing:.4px;color:#a0b8cc;z-index:55;
+  pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.6);
 }
-.studio-credit .brand{
-  font-weight:800;
-  color:#fff;
-  letter-spacing:.6px;
-}
-.studio-credit .brand .accent{
-  color:var(--accent);
-}
-.overlay .studio-credit{
-  position:static;
-  margin-top:34px;
-  font-size:.82rem;
-}
+.studio-credit .brand{ font-weight:800; color:#fff; letter-spacing:.6px; }
+.studio-credit .brand .accent{ color:var(--accent); }
+.overlay .studio-credit{ position:static; margin-top:34px; font-size:.82rem; }
 
 .lcard{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;background:rgba(20,22,26,.65);backdrop-filter:blur(4px);
+  justify-content:center;background:rgba(20,22,26,.7);backdrop-filter:blur(4px);
   z-index:40;opacity:0;pointer-events:none;transition:opacity .5s}
 .lcard.show{opacity:1}
 .lcard .n{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;color:#fff;
   text-shadow:0 4px 0 #0000004d;margin-bottom:6px}
-.lcard .c{font-size:clamp(1rem,3vw,1.3rem);color:#cddce8}
+.lcard .c{font-size:clamp(1rem,3vw,1.3rem);color:#cddce8;margin-bottom:10px}
+.lcard .dest{
+  font-size:clamp(1rem,3vw,1.2rem);color:#fff;font-weight:800;background:var(--hud);
+  padding:8px 22px;border-radius:40px;box-shadow:0 4px 14px rgba(0,0,0,.35);
+  display:flex;align-items:center;gap:10px;
+}
+.lcard .dest .arrow{color:#a0b8cc;font-weight:500;font-size:.85rem;margin-right:4px}
+.lcard .dest .icon{font-size:1.3rem}
 
-.mmap{position:absolute;top:78px;right:14px;width:118px;background:var(--hud);
+.mmap{position:absolute;top:78px;right:14px;width:130px;background:var(--hud);
   backdrop-filter:blur(6px);border-radius:18px;padding:8px 10px;box-shadow:0 4px 14px #0006;
   z-index:10;pointer-events:none}
-.mmap .lbl{display:flex;justify-content:space-between;font-size:.6rem;color:#a0b8cc;margin-bottom:6px}
+.mmap .lbl{display:flex;justify-content:space-between;font-size:.65rem;color:#a0b8cc;margin-bottom:6px;font-weight:700}
+.mmap .lbl .from{color:#cddce8}
+.mmap .lbl .to{color:#3FB27F}
 .mmap .line{position:relative;height:6px;background:#ffffff33;border-radius:4px;margin:6px 0}
 .mmap .fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);border-radius:4px}
 .mmap .dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;
   background:#fff;border-radius:50%;box-shadow:0 0 8px var(--accent)}
-.mmap .dest{position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:1.1rem}
+.mmap .dest-icon{position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:1.15rem}
+.mmap .lvl-label{display:flex;justify-content:space-between;font-size:.6rem;color:#a0b8cc;margin-top:4px;font-weight:700}
 
 .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30;
   transition:opacity .1s}
@@ -146,7 +138,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
         <span class="streak" id="streak">🔥0</span></div>
     </div>
     <div class="hud-box">
-      <div class="hud-item"><span class="icon">⏱</span><span class="val" id="timer">02:00</span></div>
+      <div class="hud-item"><span class="icon">⏱</span><span class="val" id="timer">01:30</span></div>
+      <div class="hud-item" style="margin-left:6px"><span class="icon">🏁</span><span class="val" id="levelNum">1/4</span></div>
     </div>
     <div class="hud-box">
       <div class="speed-wrap">
@@ -157,12 +150,13 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
   </div>
 
   <div class="mmap">
-    <div class="lbl"><span>START</span><span>🏟</span></div>
+    <div class="lbl"><span class="from" id="mapFrom">🏠</span><span class="to">→</span><span class="to" id="mapTo">🏟</span></div>
     <div class="line">
       <div class="fill" id="mapFill" style="width:0%"></div>
       <div class="dot" id="mapDot" style="left:0%"></div>
-      <div class="dest">🏟</div>
+      <div class="dest-icon" id="mapDestIcon">🏟</div>
     </div>
+    <div class="lvl-label"><span id="mapLevelName">Residential</span><span id="mapPct">0%</span></div>
   </div>
 
   <div class="flash" id="flash"></div>
@@ -172,7 +166,11 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
     <div class="right"><div class="tbtn accel" id="tA">▲</div><div class="tbtn brake" id="tB">▼</div></div>
   </div>
 
-  <div class="lcard" id="lcard"><div class="n" id="lname">Residential</div><div class="c" id="lcue">40 km/h</div></div>
+  <div class="lcard" id="lcard">
+    <div class="n" id="lname">Residential</div>
+    <div class="c" id="lcue">40 km/h · Watch for lights</div>
+    <div class="dest"><span class="arrow">NEXT STOP</span><span class="icon" id="lcardDestIcon">🏟</span><span id="lcardDestName">Stadium</span></div>
+  </div>
 
   <div class="overlay" id="startScreen">
     <h1>ROAD MASTER</h1>
@@ -194,6 +192,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
     <div class="stats">
       <div class="stat"><span class="lbl">Credits</span><span class="num" id="overCredits">0</span></div>
       <div class="stat"><span class="lbl">Score</span><span class="num" id="overScore">0</span></div>
+      <div class="stat"><span class="lbl">Level</span><span class="num" id="overLevel">1/4</span></div>
     </div>
     <div>
       <button class="btn btn-p" id="retryBtn">TRY AGAIN</button>
@@ -206,7 +205,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 
   <div class="overlay hidden" id="winScreen">
     <h1>ROAD MASTER!</h1>
-    <p class="msg">You made it to the match on time!</p>
+    <p class="msg">You reached every destination on time!</p>
     <div class="stats">
       <div class="stat"><span class="lbl">Score</span><span class="num" id="winScore">0</span></div>
       <div class="stat"><span class="lbl">Credits</span><span class="num" id="winCredits">0</span></div>
@@ -227,26 +226,25 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 'use strict';
 
 // ============================================================
-// CONFIG
+// CONFIG  — FAST car, longer distances
 // ============================================================
 var CFG = {
   START_CREDITS: 100,
   VIOLATION_COST: 2,
-  MAX_SPEED: 100,
-  ACCEL: 6,
-  BRAKE: 45,
-  DECEL: 4,
-  LEVEL_TIME: 120,
-  DEST_DIST: 1400,
-  STEER_SPEED: 1.8,
-  SIGN_GAP_MIN: 750,
-  SIGN_GAP_MAX: 950,
-  CAM_GAP_MIN: 1000,
-  CAM_GAP_MAX: 1300,
+  MAX_SPEED: 140,          // ↑↑ much faster top speed
+  ACCEL: 18,               // ↑↑ quick pick-up
+  BRAKE: 70,
+  DECEL: 8,
+  LEVEL_TIME: 100,         // ↑ more time for longer routes
+  DEST_DIST: 2400,         // ↑↑ much longer routes (3× longer)
+  STEER_SPEED: 2.4,        // ↑ sharper steering
+  SIGN_GAP_MIN: 900,       // spaced further since route is longer
+  SIGN_GAP_MAX: 1200,
+  CAM_GAP_MIN: 1100,
+  CAM_GAP_MAX: 1400,
   LIGHT_RED_TIME: 5,
   LIGHT_GREEN_TIME: 6,
-  LIGHT_WINDOW: 220,
-  LIGHT_SLOW_SPEED: 5,
+  LIGHT_WINDOW: 260,
   C: {
     lane:'#F4E9D8',
     grass:'#4C9A6A', grassD:'#3E7F58',
@@ -257,6 +255,48 @@ var CFG = {
 };
 
 // ============================================================
+// LEVELS
+// ============================================================
+var LEVELS = [
+  {
+    name:'Residential',
+    cue:'40 km/h · Watch for lights',
+    limit:40,
+    signMix:['speed','light'],
+    cars:0.10,
+    from:{ icon:'🏠', name:'Home' },
+    to:  { icon:'🏟', name:'Stadium' }
+  },
+  {
+    name:'Town Center',
+    cue:'50 km/h · Lights & pedestrians',
+    limit:50,
+    signMix:['speed','light','ped'],
+    cars:0.18,
+    from:{ icon:'🏟', name:'Stadium' },
+    to:  { icon:'🏫', name:'School' }
+  },
+  {
+    name:'School Zone',
+    cue:'30 km/h · Slow & careful',
+    limit:30,
+    signMix:['speed','light','ped','yield'],
+    cars:0.22,
+    from:{ icon:'🏫', name:'School' },
+    to:  { icon:'🏥', name:'Hospital' }
+  },
+  {
+    name:'City Highway',
+    cue:'60 km/h · Final stretch',
+    limit:60,
+    signMix:['speed','light','yield'],
+    cars:0.30,
+    from:{ icon:'🏥', name:'Hospital' },
+    to:  { icon:'🏟', name:'Grand Arena' }
+  }
+];
+
+// ============================================================
 // DOM
 // ============================================================
 function $(id){ return document.getElementById(id); }
@@ -264,11 +304,15 @@ var cv = $('cv');
 var ctx = cv.getContext('2d');
 var startScreen=$('startScreen'), overScreen=$('overScreen'), winScreen=$('winScreen');
 var lcard=$('lcard'), lname=$('lname'), lcue=$('lcue');
+var lcardDestIcon=$('lcardDestIcon'), lcardDestName=$('lcardDestName');
 var creditsEl=$('credits'), scoreEl=$('score'), timerEl=$('timer');
 var speedEl=$('speed'), limitEl=$('limit'), streakEl=$('streak');
+var levelNumEl=$('levelNum');
 var creditsBox=$('creditsBox'), flashEl=$('flash');
 var mapFill=$('mapFill'), mapDot=$('mapDot');
-var overMsg=$('overMsg'), overCredits=$('overCredits'), overScore=$('overScore');
+var mapFrom=$('mapFrom'), mapTo=$('mapTo'), mapDestIcon=$('mapDestIcon');
+var mapLevelName=$('mapLevelName'), mapPct=$('mapPct');
+var overMsg=$('overMsg'), overCredits=$('overCredits'), overScore=$('overScore'), overLevel=$('overLevel');
 var winScore=$('winScore'), winCredits=$('winCredits'), winTime=$('winTime');
 
 // ============================================================
@@ -303,17 +347,11 @@ var G = {
   input:{ L:false, R:false, U:false, D:false },
   audio:null,
   rafId:0,
-  activeLightZone:null
+  activeLightZone:null,
+  levelAdvanceTimer: 0,
+  levelAdvancing: false,
+  carryOver: false
 };
-
-var LEVELS = [
-  { name:'Residential', cue:'40 km/h · Watch for lights', limit:40,
-    signMix:['speed','light'], cars:0.10 },
-  { name:'Town Center', cue:'50 km/h · Lights & pedestrians', limit:50,
-    signMix:['speed','light','ped'], cars:0.18 },
-  { name:'School & Highway', cue:'Mixed zone · React fast!', limit:50,
-    signMix:['speed','light','ped','yield'], cars:0.25 }
-];
 
 // ============================================================
 // HELPERS
@@ -366,7 +404,7 @@ function buildLevel(){
     G.objs.push({ kind:'tree', z:z+80, side:1, v:(Math.random()*3)|0, checked:true });
   }
 
-  var zSign = 500;
+  var zSign = 400;
   var limits = [30,40,50,60];
   var li = limits.indexOf(L.limit);
   if(li < 0) li = 1;
@@ -385,13 +423,12 @@ function buildLevel(){
         line:true
       });
     } else {
-      G.objs.push({ kind:'sign', type:t, z:zSign, checked:false,
-        red:(t === 'light' && Math.random() < 0.5) });
+      G.objs.push({ kind:'sign', type:t, z:zSign, checked:false });
     }
     zSign += rnd(CFG.SIGN_GAP_MIN, CFG.SIGN_GAP_MAX);
   }
 
-  var zCam = 1100;
+  var zCam = 900;
   while(zCam < CFG.DEST_DIST - 200){
     var best = null;
     for(var i=0;i<G.objs.length;i++){
@@ -405,7 +442,7 @@ function buildLevel(){
     zCam += rnd(CFG.CAM_GAP_MIN, CFG.CAM_GAP_MAX);
   }
 
-  for(var zc=700; zc<CFG.DEST_DIST-300; zc+=rnd(600,900)){
+  for(var zc=600; zc<CFG.DEST_DIST-300; zc+=rnd(600,900)){
     if(Math.random() < L.cars){
       G.objs.push({ kind:'car', z:zc, side:Math.random()<.5?-1:1, checked:true });
     }
@@ -413,9 +450,12 @@ function buildLevel(){
 
   G.objs.sort(function(a,b){ return a.z - b.z; });
 
-  G.credits = CFG.START_CREDITS;
-  G.score = 0;
-  G.streak = 0;
+  // On level 1 fresh game, reset credits & score
+  if(G.level === 1 && !G.carryOver){
+    G.credits = CFG.START_CREDITS;
+    G.score = 0;
+    G.streak = 0;
+  }
   G.speed = 0;
   G.timer = CFG.LEVEL_TIME;
   G.dist = 0;
@@ -424,6 +464,12 @@ function buildLevel(){
   G.parts = [];
   G.floats = [];
   G.roadScroll = 0;
+
+  mapFrom.textContent = L.from.icon;
+  mapTo.textContent = L.to.icon;
+  mapDestIcon.textContent = L.to.icon;
+  mapLevelName.textContent = L.name;
+  levelNumEl.textContent = G.level + '/4';
 
   updateHUD();
 }
@@ -451,6 +497,7 @@ function updateHUD(){
   var progress = clamp(G.dist / CFG.DEST_DIST, 0, 1);
   mapFill.style.width = (progress*100) + '%';
   mapDot.style.left = (progress*100) + '%';
+  mapPct.textContent = Math.round(progress*100) + '%';
 }
 
 function pulseLimit(){
@@ -523,7 +570,8 @@ function computeView(){
   VIEW.roadCenter = cv.width / 2;
   VIEW.roadX = VIEW.roadCenter - VIEW.roadW/2;
   VIEW.playerY = cv.height * 0.78;
-  VIEW.pxPerUnit = 0.45;
+  // Lower pxPerUnit means signs approach slower visually
+  VIEW.pxPerUnit = 0.32;
 }
 
 function worldToScreenY(worldZ){
@@ -641,11 +689,8 @@ function drawSign(o, y){
   } else if(o.type === 'light'){
     var hw = size*0.5, hh = size*1.2;
     ctx.fillStyle = '#1a1e22';
-    roundRect(ctx, -hw/2, -hh/2, hw, hh, 6);
-    ctx.fill();
-    ctx.strokeStyle = '#0a0d10';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    roundRect(ctx, -hw/2, -hh/2, hw, hh, 6); ctx.fill();
+    ctx.strokeStyle = '#0a0d10'; ctx.lineWidth = 2; ctx.stroke();
 
     var lights = [
       { color: CFG.C.red,   on: o.phase === 'red'   },
@@ -657,8 +702,7 @@ function drawSign(o, y){
       var L = lights[j];
       if(L.on){
         ctx.save();
-        ctx.shadowColor = L.color;
-        ctx.shadowBlur = 22;
+        ctx.shadowColor = L.color; ctx.shadowBlur = 22;
         ctx.fillStyle = L.color;
         ctx.beginPath(); ctx.arc(0, ly, size*0.16, 0, Math.PI*2); ctx.fill();
         ctx.restore();
@@ -735,19 +779,20 @@ function drawOtherCar(o, y){
 
 function drawDestination(y){
   var cx = VIEW.roadCenter;
+  var L = LEVELS[G.level-1];
   ctx.save();
   ctx.shadowColor = CFG.C.green;
   ctx.shadowBlur = 30;
   ctx.fillStyle = CFG.C.green;
-  ctx.beginPath(); ctx.arc(cx, y, 34, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, y, 36, 0, Math.PI*2); ctx.fill();
   ctx.restore();
 
   ctx.fillStyle = '#fff';
-  ctx.beginPath(); ctx.arc(cx, y, 26, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, y, 28, 0, Math.PI*2); ctx.fill();
 
-  ctx.font = '30px system-ui';
+  ctx.font = '32px system-ui';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText('🏟', cx, y + 1);
+  ctx.fillText(L.to.icon, cx, y + 1);
 }
 
 function roundRect(ctx, x, y, w, h, r){
@@ -796,15 +841,15 @@ function drawPlayerCar(){
   ctx.fill();
   if(G.input.D) ctx.restore();
 
-  if(G.speed > 40){
-    var alpha = clamp((G.speed - 40) / 60, 0, 1) * 0.4;
+  if(G.speed > 60){
+    var alpha = clamp((G.speed - 60) / 80, 0, 1) * 0.5;
     ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
     ctx.lineWidth = 2;
-    for(var i=0;i<4;i++){
-      var ox = cx - w*0.4 + i * (w*0.27);
+    for(var i=0;i<5;i++){
+      var ox = cx - w*0.4 + i * (w*0.2);
       ctx.beginPath();
       ctx.moveTo(ox, cy + h*0.5);
-      ctx.lineTo(ox, cy + h*0.5 + 20 + Math.random()*14);
+      ctx.lineTo(ox, cy + h*0.5 + 24 + Math.random()*20);
       ctx.stroke();
     }
   }
@@ -865,6 +910,16 @@ function drawVignette(){
 function update(dt){
   if(G.phase !== 'playing') return;
 
+  if(G.levelAdvancing){
+    G.levelAdvanceTimer -= dt;
+    if(G.levelAdvanceTimer <= 0){
+      G.levelAdvancing = false;
+      G.carryOver = true;
+      startLevel();
+      return;
+    }
+  }
+
   var targetAccel;
   if(G.input.U) targetAccel = CFG.ACCEL;
   else if(G.input.D) targetAccel = -CFG.BRAKE;
@@ -872,17 +927,21 @@ function update(dt){
 
   G.speed = clamp(G.speed + targetAccel * dt, 0, CFG.MAX_SPEED);
 
-  if(G.input.L) G.px = clamp(G.px - 1.4 * dt, 0.12, 0.88);
-  if(G.input.R) G.px = clamp(G.px + 1.4 * dt, 0.12, 0.88);
+  if(G.input.L) G.px = clamp(G.px - CFG.STEER_SPEED * dt, 0.12, 0.88);
+  if(G.input.R) G.px = clamp(G.px + CFG.STEER_SPEED * dt, 0.12, 0.88);
 
-  var dz = G.speed * dt * 2.2;
+  // Distance advanced per frame — scale this so movement feels fast
+  var dz = G.speed * dt * 3.5;
   G.dist += dz;
   G.roadScroll += dz;
 
   G.timer -= dt;
   if(G.timer <= 0){ G.timer = 0; endGame('time'); return; }
 
-  if(G.dist >= CFG.DEST_DIST){ winLevel(); return; }
+  if(!G.levelAdvancing && G.dist >= CFG.DEST_DIST){
+    winLevel();
+    return;
+  }
 
   for(var i=0;i<G.objs.length;i++){
     var o = G.objs[i];
@@ -991,27 +1050,39 @@ function startLevel(){
   winScreen.classList.add('hidden');
 
   var L = LEVELS[G.level-1];
-  lname.textContent = L.name;
+  lname.textContent = 'Level ' + G.level + ' · ' + L.name;
   lcue.textContent = L.cue;
+  lcardDestIcon.textContent = L.to.icon;
+  lcardDestName.textContent = L.to.name;
   lcard.classList.add('show');
-  setTimeout(function(){ lcard.classList.remove('show'); }, 1400);
+  setTimeout(function(){ lcard.classList.remove('show'); }, 1600);
 
   G.last = performance.now();
 }
 
 function endGame(reason){
   G.phase = 'over';
+  G.levelAdvancing = false;
   overCredits.textContent = G.credits;
   overScore.textContent = G.score;
-  overMsg.textContent = (reason === 'time') ? 'You missed kickoff!' : 'Too many violations.';
+  overLevel.textContent = G.level + '/4';
+  overMsg.textContent = (reason === 'time') ? 'You missed the destination!' : 'Too many violations.';
   overScreen.classList.remove('hidden');
   sfxBad();
 }
 
 function winLevel(){
-  if(G.level < 3){
+  var bonus = Math.round(G.timer * 2);
+  G.score += bonus;
+  updateHUD();
+
+  if(G.level < 4){
+    G.levelAdvancing = true;
+    G.levelAdvanceTimer = 1.2;
     G.level++;
-    setTimeout(startLevel, 700);
+    G.speed = 0;
+    G.dist = CFG.DEST_DIST;
+    sfxGood();
   } else {
     G.phase = 'win';
     winScore.textContent = G.score;
@@ -1032,6 +1103,9 @@ function restartGame(){
   G.timer = CFG.LEVEL_TIME;
   G.dist = 0;
   G.px = 0.5;
+  G.carryOver = false;
+  G.levelAdvancing = false;
+  G.levelAdvanceTimer = 0;
   overScreen.classList.add('hidden');
   winScreen.classList.add('hidden');
   startLevel();
@@ -1050,6 +1124,9 @@ function goHome(){
   G.timer = CFG.LEVEL_TIME;
   G.dist = 0;
   G.px = 0.5;
+  G.carryOver = false;
+  G.levelAdvancing = false;
+  G.levelAdvanceTimer = 0;
 }
 
 // ============================================================
