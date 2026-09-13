@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Orbit 9 — Rotation Puzzle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <canvas id="game" aria-label="Orbit rotation puzzle game"></canvas>
+
+    <div class="hud">
+      <div class="moves" id="moves">12</div>
+      <button class="undo" id="undo" aria-label="Undo last move">↶</button>
+      <div class="level" id="level">9</div>
+    </div>
+
+    <div class="controls">
+      <button class="control down" id="leftBtn" aria-label="Rotate counter-clockwise">
+        <span>⌄</span><span>⌄</span><span>⌄</span>
+      </button>
+
+      <button class="play" id="playBtn" aria-label="Start game">
+        <span></span>
+      </button>
+
+      <button class="control up" id="rightBtn" aria-label="Rotate clockwise">
+        <span>⌃</span><span>⌃</span><span>⌃</span>
+      </button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
