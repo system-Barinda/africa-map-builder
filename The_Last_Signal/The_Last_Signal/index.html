@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>The Last Signal</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<div class="game-container">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="game-header">
+
+        <div class="game-title">
+
+            <h1>THE LAST SIGNAL</h1>
+
+            <p>KIGALI • 2045</p>
+
+        </div>
+
+
+        <div class="hud">
+
+
+            <div class="hud-item">
+
+                <span>⏱️</span>
+
+                <div>
+
+                    <small>TIME</small>
+
+                    <strong id="timer">
+                        00:00
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="hud-item">
+
+                <span>⭐</span>
+
+                <div>
+
+                    <small>SCORE</small>
+
+                    <strong id="score">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="hud-item">
+
+                <span>🔋</span>
+
+                <div>
+
+                    <small>BATTERY</small>
+
+                    <strong id="battery">
+                        100%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="hud-item">
+
+                <span>📡</span>
+
+                <div>
+
+                    <small>SIGNAL</small>
+
+                    <strong id="signal">
+                        0 / 3
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="hud-item">
+
+                <span>🔑</span>
+
+                <div>
+
+                    <small>CLUES</small>
+
+                    <strong id="clues">
+                        0 / 3
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= GAME ================= -->
+
+    <main>
+
+        <div id="gameArea">
+
+            <canvas
+                id="gameCanvas"
+                width="1200"
+                height="700">
+            </canvas>
+
+
+            <!-- CURRENT MISSION -->
+
+            <div class="mission-box">
+
+                <span class="mission-label">
+                    CURRENT MISSION
+                </span>
+
+                <h3 id="missionTitle">
+                    Find the first signal
+                </h3>
+
+                <p id="missionText">
+                    Explore the city and locate
+                    the mysterious transmission.
+                </p>
+
+            </div>
+
+
+            <!-- CONTROL HELP -->
+
+            <div class="controls-box">
+
+                <b>CONTROLS</b>
+
+                <span>WASD / ARROWS</span>
+                Move
+
+                <span>E</span>
+                Interact
+
+            </div>
+
+
+            <!-- INTERACTION -->
+
+            <div
+                id="interactionPrompt"
+                class="interaction hidden">
+
+                PRESS <strong>E</strong> TO INTERACT
+
+            </div>
+
+
+            <!-- START SCREEN -->
+
+            <div id="startScreen">
+
+                <div class="story-card">
+
+                    <div class="story-top">
+                        KIGALI • 2045
+                    </div>
+
+                    <h2>
+                        THE LAST SIGNAL
+                    </h2>
+
+                    <div class="line"></div>
+
+                    <p class="story">
+
+                        It is 11:47 PM.
+
+                        <br><br>
+
+                        Without warning, every phone,
+                        radio and internet connection
+                        across Kigali goes offline.
+
+                        <br><br>
+
+                        You are a young technology
+                        student carrying an experimental
+                        communication device.
+
+                        <br><br>
+
+                        Then your phone receives
+                        <strong>
+                            one mysterious signal.
+                        </strong>
+
+                    </p>
+
+
+                    <div class="mission-intro">
+
+                        <strong>
+                            YOUR MISSION
+                        </strong>
+
+                        <p>
+
+                            Find the signals,
+                            collect the hidden clues
+                            and discover who is trying
+                            to contact you.
+
+                        </p>
+
+                    </div>
+
+
+                    <button id="startButton">
+
+                        START MISSION
+
+                    </button>
+
+
+                    <p class="controls-text">
+
+                        WASD / ARROW KEYS
+                        <br>
+                        E = INTERACT
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="messageBox"
+                class="hidden">
+
+                <div class="message-card">
+
+                    <div class="message-icon">
+                        📡
+                    </div>
+
+                    <h2 id="messageTitle">
+                        SIGNAL DETECTED
+                    </h2>
+
+                    <p id="messageText"></p>
+
+                    <button id="closeMessage">
+                        CONTINUE
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FINAL SCREEN -->
+
+            <div
+                id="winScreen"
+                class="hidden">
+
+                <div class="story-card">
+
+                    <div class="story-top">
+                        CONNECTION RESTORED
+                    </div>
+
+                    <h2>
+                        MISSION COMPLETE
+                    </h2>
+
+                    <div class="line"></div>
+
+
+                    <div class="results">
+
+                        <div>
+                            <span>TIME</span>
+                            <strong id="finalTime">
+                                00:00
+                            </strong>
+                        </div>
+
+
+                        <div>
+                            <span>SCORE</span>
+                            <strong id="finalScore">
+                                0
+                            </strong>
+                        </div>
+
+
+                        <div>
+                            <span>GRADE</span>
+                            <strong
+                                id="finalGrade"
+                                class="grade">
+                                A
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <p
+                        id="gradeMessage"
+                        class="grade-message">
+                    </p>
+
+
+                    <p class="story">
+
+                        You found all three signals
+                        and recovered all three clues.
+
+                        <br><br>
+
+                        The mysterious transmission
+                        came from engineers secretly
+                        rebuilding Kigali's emergency
+                        communication network.
+
+                        <br><br>
+
+                        You helped reconnect the city.
+
+                    </p>
+
+
+                    <div class="success">
+
+                        ✓ KIGALI IS CONNECTING AGAIN
+
+                    </div>
+
+
+                    <button id="restartButton">
+
+                        PLAY AGAIN
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= LOG ================= -->
+
+        <section class="bottom-panel">
+
+            <div class="log-title">
+
+                <span>
+                    MISSION LOG
+                </span>
+
+                <span class="live">
+                    ● LIVE
+                </span>
+
+            </div>
+
+
+            <p id="log">
+
+                Your communication device has
+                detected an unknown signal...
+
+            </p>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="game.js"></script>
+
+</body>
+
+</html>
