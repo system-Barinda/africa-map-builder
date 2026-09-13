@@ -340,7 +340,7 @@ function burst(x, y, color, n) {
       s = 1 + Math.random() * 4;
     G.particles.push({
       x,
-      y,
+      y,'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\''
       vx: Math.cos(a) * s,
       vy: Math.sin(a) * s,
       life: 1,
