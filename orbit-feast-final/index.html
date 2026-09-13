@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>Orbit Feast</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="game-shell">
+<canvas id="game"></canvas>
+
+<header class="hud">
+  <div class="moves"><b id="moves">12</b><small>MOVES</small></div>
+  <div class="level"><span id="level">9</span><small>LEVEL</small></div>
+  <div class="timer"><small>TIME</small><b id="timer">45</b></div>
+  <div class="eaten"><b><span id="eaten">0</span>/<span id="total">3</span></b><small>EATEN</small></div>
+  <div class="actions">
+    <button id="soundBtn" title="Sound">🔊</button>
+    <button id="settingsBtn" title="Settings">⚙</button>
+    <button id="undoBtn" title="Undo">↶</button>
+  </div>
+</header>
+
+<div class="instruction" id="instruction">PRESS PLAY</div>
+
+<section class="controls">
+  <button class="direction down" id="leftBtn" aria-label="Move left"><span>⌄</span><span>⌄</span><span>⌄</span></button>
+  <button class="play" id="playBtn" aria-label="Play"><span id="playIcon"></span></button>
+  <button class="direction up" id="rightBtn" aria-label="Move right"><span>⌃</span><span>⌃</span><span>⌃</span></button>
+</section>
+
+<div class="settings" id="settings">
+  <div class="card">
+    <button class="close" id="closeSettings">×</button>
+    <h2>ORBIT FEAST</h2>
+    <p>Every button press moves <b>all objects</b>. Eat every pink ball. When the cyan ball reaches a crossing, it can move onto the other orbit. After the last ball is eaten, reach the cyan checker gate.</p>
+    <div class="row"><span>Pink balls</span><div><button id="minusBalls">−</button><b id="ballCount">3</b><button id="plusBalls">+</button></div></div>
+    <div class="row"><span>Time limit</span><div><button id="minusTime">−</button><b id="timeLimit">45</b><button id="plusTime">+</button></div></div>
+    <button class="wide" id="newGame">START NEW GAME</button>
+    <p class="tiny">Tip: after eating a ball, the cyan orb grows. The more it eats, the more powerful it looks.</p>
+  </div>
+</div>
+
+<div class="result" id="result">
+  <div class="card result-card">
+    <div id="resultIcon" class="result-icon">★</div>
+    <h1 id="resultTitle">LEVEL COMPLETE</h1>
+    <p id="resultText">You ate every orb and found the gate.</p>
+    <div class="stats">
+      <div><b id="resultEaten">3/3</b><small>EATEN</small></div>
+      <div><b id="resultMoves">0</b><small>MOVES LEFT</small></div>
+      <div><b id="resultTime">0s</b><small>TIME</small></div>
+    </div>
+    <button class="wide" id="nextBtn">NEXT LEVEL</button>
+    <button class="retry" id="retryBtn">RETRY</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
