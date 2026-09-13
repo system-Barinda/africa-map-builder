@@ -42,7 +42,41 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 .credits-low .icon,.credits-low .val{color:var(--red);animation:blink .8s infinite alternate}
 @keyframes blink{from{opacity:.6}to{opacity:1}}
 
-/* Sound toggle */
+/* GEAR DISPLAY */
+.gear-box{
+  display:flex;align-items:center;gap:8px;
+}
+.gear-display{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(20,22,26,.7);
+  border:2px solid #ffffff40;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:1.4rem;color:#fff;
+  text-shadow:0 1px 3px #000;
+  transition:all .15s;
+}
+.gear-display.shift{
+  animation:gearShift .35s ease;
+}
+@keyframes gearShift{
+  0%{transform:scale(1);background:rgba(20,22,26,.7);}
+  50%{transform:scale(1.25);background:var(--accent);box-shadow:0 0 20px var(--accent);}
+  100%{transform:scale(1);background:rgba(20,22,26,.7);}
+}
+.gear-bars{
+  display:flex;flex-direction:column;gap:2px;
+}
+.gear-bars .bar{
+  width:60px;height:4px;background:#ffffff25;border-radius:2px;overflow:hidden;
+  position:relative;
+}
+.gear-bars .bar .fill{
+  position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg, var(--green), var(--yellow), var(--red));
+  width:0%;
+  transition:width .08s linear;
+}
+
 .sound-toggle{
   position:absolute;top:78px;left:14px;z-index:15;
   background:var(--hud);backdrop-filter:blur(6px);
@@ -52,10 +86,32 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
   border:2px solid #ffffff30;
   box-shadow:0 4px 14px rgba(0,0,0,.35);
   transition:transform .1s;
-  user-select:none;
 }
 .sound-toggle:active{transform:scale(0.92)}
 .sound-toggle.muted{opacity:0.55}
+
+.indicators{
+  position:absolute;top:78px;left:50%;transform:translateX(-50%);
+  display:flex;gap:14px;z-index:12;pointer-events:none;
+}
+.indicator{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--hud);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;font-weight:800;
+  border:2px solid #ffffff20;
+  color:#4a5763;
+  transition:color .1s, background .1s, box-shadow .1s;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  pointer-events:auto;cursor:pointer;
+}
+.indicator.on{
+  color:#ffcf40;
+  background:rgba(244,183,64,.25);
+  box-shadow:0 0 24px #f4b740cc, 0 4px 14px rgba(0,0,0,.35);
+  animation:blinkL .5s infinite alternate;
+}
+@keyframes blinkL{from{opacity:.6}to{opacity:1}}
 
 .touch{position:absolute;bottom:20px;left:0;width:100%;display:none;
   justify-content:space-between;padding:0 20px;z-index:20;pointer-events:none}
@@ -91,10 +147,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 .btn-pulse{animation:bp 2s ease-in-out infinite}
 @keyframes bp{0%,100%{transform:scale(1);box-shadow:0 6px 0 #2a4fa0,0 10px 18px #0006}
   50%{transform:scale(1.04);box-shadow:0 6px 0 #2a4fa0,0 14px 26px #4c7cf080}}
-.onboard{display:flex;gap:20px;margin-top:26px;opacity:.75}
+.onboard{display:flex;gap:20px;margin-top:20px;opacity:.85;flex-wrap:wrap;justify-content:center}
 .onboard span{display:flex;flex-direction:column;align-items:center;gap:4px;
-  font-size:.8rem;color:#a0b8cc}
-.onboard .k{font-size:1.7rem}
+  font-size:.75rem;color:#a0b8cc}
+.onboard .k{font-size:1.35rem;background:#1e3a5b;padding:4px 10px;border-radius:8px;color:#fff;font-weight:800}
 
 .studio-credit{
   position:absolute;left:0;right:0;bottom:14px;text-align:center;
@@ -103,7 +159,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 }
 .studio-credit .brand{ font-weight:800; color:#fff; letter-spacing:.6px; }
 .studio-credit .brand .accent{ color:var(--accent); }
-.overlay .studio-credit{ position:static; margin-top:34px; font-size:.82rem; }
+.overlay .studio-credit{ position:static; margin-top:24px; font-size:.82rem; }
 
 .lcard{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
   justify-content:center;background:rgba(20,22,26,.7);backdrop-filter:blur(4px);
@@ -136,9 +192,31 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30;
   transition:opacity .1s}
 
+/* Gear shift hint on desktop */
+.gear-hint{
+  position:absolute;bottom:20px;right:16px;z-index:12;
+  background:var(--hud);backdrop-filter:blur(6px);
+  padding:8px 14px;border-radius:20px;
+  font-size:.75rem;color:#cddce8;font-weight:700;
+  display:flex;gap:8px;align-items:center;
+  border:2px solid #ffffff20;
+  pointer-events:none;
+}
+.gear-hint .num{
+  display:inline-block;background:#1e3a5b;color:#fff;
+  width:20px;height:20px;border-radius:50%;
+  text-align:center;line-height:20px;font-size:.7rem;
+  margin:0 1px;
+}
+
 @media (prefers-reduced-motion:reduce){
   .btn-pulse{animation:none}
   .credits-low .icon,.credits-low .val{animation:none}
+  .indicator.on{animation:none}
+  .gear-display.shift{animation:none}
+}
+@media(hover:none) and (pointer:coarse){
+  .gear-hint{display:none;}
 }
 </style>
 </head>
@@ -157,6 +235,14 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
       <div class="hud-item" style="margin-left:6px"><span class="icon">🏁</span><span class="val" id="levelNum">1/4</span></div>
     </div>
     <div class="hud-box">
+      <div class="gear-box">
+        <div class="gear-display" id="gearDisplay">1</div>
+        <div class="gear-bars">
+          <div class="bar"><div class="fill" id="rpmFill"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="hud-box">
       <div class="speed-wrap">
         <span class="speed-num" id="speed">0 <small>km/h</small></span>
         <span class="limit-badge" id="limit">40</span>
@@ -164,7 +250,12 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
     </div>
   </div>
 
-  <div class="sound-toggle" id="soundToggle" title="Toggle engine sound">🔊</div>
+  <div class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</div>
+
+  <div class="indicators">
+    <div class="indicator" id="indLeft" title="Left indicator (Ctrl)">◀</div>
+    <div class="indicator" id="indRight" title="Right indicator (Alt)">▶</div>
+  </div>
 
   <div class="mmap">
     <div class="lbl"><span class="from" id="mapFrom">🏠</span><span class="to">→</span><span class="to" id="mapTo">🏟</span></div>
@@ -189,6 +280,11 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
     <div class="dest"><span class="arrow">NEXT STOP</span><span class="icon" id="lcardDestIcon">🏟</span><span id="lcardDestName">Stadium</span></div>
   </div>
 
+  <div class="gear-hint">
+    <span>GEARS</span>
+    <span class="num">1</span><span class="num">2</span><span class="num">3</span><span class="num">4</span><span class="num">5</span>
+  </div>
+
   <div class="overlay" id="startScreen">
     <h1>ROAD MASTER</h1>
     <p class="sub">Respect the signs. Drive safe.</p>
@@ -196,6 +292,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
     <div class="onboard">
       <span><span class="k">⬆⬇</span>speed</span>
       <span><span class="k">⬅➡</span>steer</span>
+      <span><span class="k">1-5</span>gear</span>
+      <span><span class="k">Space</span>horn</span>
+      <span><span class="k">Ctrl</span>ind. L</span>
+      <span><span class="k">Alt</span>ind. R</span>
     </div>
     <div class="studio-credit">
       Developed by <span class="brand">Level<span class="accent">Up</span> Teams</span><br>
@@ -262,6 +362,14 @@ var CFG = {
   LIGHT_RED_TIME: 5,
   LIGHT_GREEN_TIME: 6,
   LIGHT_WINDOW: 260,
+  HORN_WINDOW: 300,
+  TURN_WINDOW: 260,
+  // -------- GEARBOX ----------
+  // Max speed per gear (in km/h). After this, the engine rev-limits.
+  GEAR_MAX: [28, 55, 85, 115, 140],
+  // Ideal shift-up speed (matches GEAR_MAX roughly)
+  IDLE_RPM: 0.15,
+  // Engine RPM range displayed (0..1)
   C: {
     lane:'#F4E9D8',
     grass:'#4C9A6A', grassD:'#3E7F58',
@@ -272,20 +380,53 @@ var CFG = {
 };
 
 // ============================================================
+// BACKGROUNDS per level
+// ============================================================
+var BACKGROUNDS = [
+  // Level 1: residential daytime — bright sky, green grass, blue-ish road
+  { skyTop:'#7EC8E8', skyBot:'#C9EEF5',
+    grass:'#4C9A6A', grassD:'#3E7F58',
+    road:'#3a4048', roadEdge:'rgba(220,235,245,.6)',
+    treeGreens:['#3d8b55','#357a4b','#4a9c64'], trunk:'#5a3f2e',
+    houseColors:['#E5C1A0','#D9A67B','#E8C7A8'] },
+
+  // Level 2: town center sunset — orange sky, warm grass, purple-ish road
+  { skyTop:'#F0A868', skyBot:'#F5D9B8',
+    grass:'#B08A5E', grassD:'#8F6E4A',
+    road:'#4a4048', roadEdge:'rgba(255,220,180,.6)',
+    treeGreens:['#8B6B3E','#9A7A46','#7A5F38'], trunk:'#4a3220',
+    houseColors:['#D9A67B','#C48B5C','#E5B88A'] },
+
+  // Level 3: school zone — yellow-green, bright daylight
+  { skyTop:'#B8E0A0', skyBot:'#E5F5C8',
+    grass:'#8FBF5A', grassD:'#6E9E3E',
+    road:'#434a42', roadEdge:'rgba(230,245,210,.6)',
+    treeGreens:['#5a9a3a','#4a8a2a','#6aaa4a'], trunk:'#4a3520',
+    houseColors:['#E8D8B0','#D5C080','#F0E0B8'] },
+
+  // Level 4: city night — dark sky, neon-lit road, dark grass
+  { skyTop:'#1a1e3a', skyBot:'#2a2e50',
+    grass:'#2a3a2a', grassD:'#1e2e1e',
+    road:'#2a2c34', roadEdge:'rgba(150,180,220,.5)',
+    treeGreens:['#1a4a2a','#143a20','#205a30'], trunk:'#3a2a1a',
+    houseColors:['#3a3a5a','#4a4a6a','#2a2a4a'] }
+];
+
+// ============================================================
 // LEVELS
 // ============================================================
 var LEVELS = [
   { name:'Residential', cue:'40 km/h · Watch for lights', limit:40,
-    signMix:['speed','light'], cars:0.10,
+    signMix:['speed','light','ped'], cars:0.10,
     from:{ icon:'🏠', name:'Home' }, to:{ icon:'🏟', name:'Stadium' } },
-  { name:'Town Center', cue:'50 km/h · Lights & pedestrians', limit:50,
-    signMix:['speed','light','ped'], cars:0.18,
+  { name:'Town Center', cue:'50 km/h · Horn & indicators', limit:50,
+    signMix:['speed','light','ped','turn'], cars:0.18,
     from:{ icon:'🏟', name:'Stadium' }, to:{ icon:'🏫', name:'School' } },
-  { name:'School Zone', cue:'30 km/h · Slow & careful', limit:30,
-    signMix:['speed','light','ped','yield'], cars:0.22,
+  { name:'School Zone', cue:'30 km/h · Horn at crossings', limit:30,
+    signMix:['speed','light','ped','turn','yield'], cars:0.22,
     from:{ icon:'🏫', name:'School' }, to:{ icon:'🏥', name:'Hospital' } },
-  { name:'City Highway', cue:'60 km/h · Final stretch', limit:60,
-    signMix:['speed','light','yield'], cars:0.30,
+  { name:'City Night', cue:'60 km/h · Final stretch', limit:60,
+    signMix:['speed','light','ped','turn','yield'], cars:0.30,
     from:{ icon:'🏥', name:'Hospital' }, to:{ icon:'🏟', name:'Grand Arena' } }
 ];
 
@@ -301,6 +442,7 @@ var lcardDestIcon=$('lcardDestIcon'), lcardDestName=$('lcardDestName');
 var creditsEl=$('credits'), scoreEl=$('score'), timerEl=$('timer');
 var speedEl=$('speed'), limitEl=$('limit'), streakEl=$('streak');
 var levelNumEl=$('levelNum');
+var gearDisplay=$('gearDisplay'), rpmFill=$('rpmFill');
 var creditsBox=$('creditsBox'), flashEl=$('flash');
 var mapFill=$('mapFill'), mapDot=$('mapDot');
 var mapFrom=$('mapFrom'), mapTo=$('mapTo'), mapDestIcon=$('mapDestIcon');
@@ -308,6 +450,7 @@ var mapLevelName=$('mapLevelName'), mapPct=$('mapPct');
 var overMsg=$('overMsg'), overCredits=$('overCredits'), overScore=$('overScore'), overLevel=$('overLevel');
 var winScore=$('winScore'), winCredits=$('winCredits'), winTime=$('winTime');
 var soundToggle=$('soundToggle');
+var indLeft=$('indLeft'), indRight=$('indRight');
 
 // ============================================================
 // RESIZE
@@ -345,7 +488,15 @@ var G = {
   levelAdvanceTimer: 0,
   levelAdvancing: false,
   carryOver: false,
-  muted: false
+  muted: false,
+  hornActive: false,
+  hornCooldown: 0,
+  indicator: 'none',
+  activePedZone: null,
+  activeTurnZone: null,
+  // GEAR
+  gear: 1,          // 1..5
+  rpm: 0.15         // 0..1
 };
 
 // ============================================================
@@ -359,22 +510,36 @@ function fmt(s){
   return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
 }
 
+// Get current background for level
+function BG(){ return BACKGROUNDS[Math.min(G.level-1, BACKGROUNDS.length-1)]; }
+
+// Current gear's max speed
+function gearMaxSpeed(){ return CFG.GEAR_MAX[G.gear-1]; }
+function gearMinSpeed(){
+  if(G.gear === 1) return 0;
+  return CFG.GEAR_MAX[G.gear-2] * 0.6;
+}
+
 // ============================================================
-// AUDIO — engine sound + effects
+// AUDIO — V6 SPORT ENGINE with manual gears
 // ============================================================
+// 3 layers of sawtooth at harmonic ratios + band-pass + road noise.
+// Pitch follows RPM (rpm = speed/gearMax) — not raw speed — so
+// gear shifts make the sound rise/fall, giving that real gearbox feel.
+//
+// Key design: RPM is 0..1 within each gear.
+//   RPM = clamp((speed - gearMin) / (gearMax - gearMin), 0, 1)
+// So shifting from gear 1 (max 28) at 28 km/h → gear 2 sets RPM to ~0.
+// The engine pitch drops when you shift up, then climbs again. No repetitive
+// sweeping, because the pitch stays anchored to the current RPM band.
+
 var ENGINE = {
-  ctx: null,
-  // main engine nodes
-  osc1: null,       // low rumble
-  osc2: null,       // higher harmonic
-  gain1: null,
-  gain2: null,
-  filter: null,
-  masterGain: null,
-  // secondary noise (road / wind)
-  noiseSource: null,
-  noiseGain: null,
-  started: false
+  started:false,
+  osc1:null, osc2:null, osc3:null,
+  gain1:null, gain2:null, gain3:null,
+  filter:null, peak:null,
+  noiseSource:null, noiseFilter:null, noiseGain:null,
+  masterGain:null
 };
 
 function initAudio(){
@@ -383,107 +548,127 @@ function initAudio(){
   catch(e){ G.audio = null; }
 }
 
-// Start the engine sound loop
 function startEngine(){
   if(!G.audio || ENGINE.started) return;
   try{
-    // ---- Master gain ----
     ENGINE.masterGain = G.audio.createGain();
-    ENGINE.masterGain.gain.value = G.muted ? 0 : 0.14;
+    ENGINE.masterGain.gain.value = G.muted ? 0 : 0.13;
     ENGINE.masterGain.connect(G.audio.destination);
 
-    // ---- Filter for warmth ----
+    // Low-pass for warmth
     ENGINE.filter = G.audio.createBiquadFilter();
     ENGINE.filter.type = 'lowpass';
-    ENGINE.filter.frequency.value = 500;
-    ENGINE.filter.Q.value = 3;
+    ENGINE.filter.frequency.value = 700;
+    ENGINE.filter.Q.value = 2;
     ENGINE.filter.connect(ENGINE.masterGain);
 
-    // ---- Oscillator 1: low rumble ----
+    // Peaking for the "rasp" of a V6
+    ENGINE.peak = G.audio.createBiquadFilter();
+    ENGINE.peak.type = 'peaking';
+    ENGINE.peak.frequency.value = 220;
+    ENGINE.peak.Q.value = 4;
+    ENGINE.peak.gain.value = 7;
+    ENGINE.peak.connect(ENGINE.filter);
+
+    // ---- Layer 1: fundamental (V6 rumble) ----
     ENGINE.osc1 = G.audio.createOscillator();
     ENGINE.osc1.type = 'sawtooth';
-    ENGINE.osc1.frequency.value = 45;
+    ENGINE.osc1.frequency.value = 55;
     ENGINE.gain1 = G.audio.createGain();
-    ENGINE.gain1.gain.value = 0.7;
+    ENGINE.gain1.gain.value = 0.5;
     ENGINE.osc1.connect(ENGINE.gain1);
-    ENGINE.gain1.connect(ENGINE.filter);
+    ENGINE.gain1.connect(ENGINE.peak);
     ENGINE.osc1.start();
 
-    // ---- Oscillator 2: harmonic ----
+    // ---- Layer 2: octave up (mid body) ----
     ENGINE.osc2 = G.audio.createOscillator();
-    ENGINE.osc2.type = 'square';
-    ENGINE.osc2.frequency.value = 90;
+    ENGINE.osc2.type = 'sawtooth';
+    ENGINE.osc2.frequency.value = 110;
     ENGINE.gain2 = G.audio.createGain();
-    ENGINE.gain2.gain.value = 0.25;
+    ENGINE.gain2.gain.value = 0.3;
     ENGINE.osc2.connect(ENGINE.gain2);
-    ENGINE.gain2.connect(ENGINE.filter);
+    ENGINE.gain2.connect(ENGINE.peak);
     ENGINE.osc2.start();
 
-    // ---- Noise for road/wind ----
-    var bufferSize = 2 * G.audio.sampleRate;
+    // ---- Layer 3: high valve/rasp (subtle) ----
+    ENGINE.osc3 = G.audio.createOscillator();
+    ENGINE.osc3.type = 'square';
+    ENGINE.osc3.frequency.value = 220;
+    ENGINE.gain3 = G.audio.createGain();
+    ENGINE.gain3.gain.value = 0.04;
+    ENGINE.osc3.connect(ENGINE.gain3);
+    ENGINE.gain3.connect(ENGINE.filter);
+    ENGINE.osc3.start();
+
+    // ---- Road/wind noise ----
+    var bufferSize = 4 * G.audio.sampleRate;
     var noiseBuffer = G.audio.createBuffer(1, bufferSize, G.audio.sampleRate);
     var output = noiseBuffer.getChannelData(0);
-    for(var i = 0; i < bufferSize; i++){
-      output[i] = Math.random() * 2 - 1;
-    }
+    for(var i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
     ENGINE.noiseSource = G.audio.createBufferSource();
     ENGINE.noiseSource.buffer = noiseBuffer;
     ENGINE.noiseSource.loop = true;
+    ENGINE.noiseFilter = G.audio.createBiquadFilter();
+    ENGINE.noiseFilter.type = 'bandpass';
+    ENGINE.noiseFilter.frequency.value = 2000;
+    ENGINE.noiseFilter.Q.value = 0.7;
     ENGINE.noiseGain = G.audio.createGain();
-    ENGINE.noiseGain.gain.value = 0.02;
-    // low-pass filter the noise for wind feel
-    var noiseFilter = G.audio.createBiquadFilter();
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.value = 800;
-    noiseFilter.Q.value = 0.6;
-    ENGINE.noiseSource.connect(noiseFilter);
-    noiseFilter.connect(ENGINE.noiseGain);
-    ENGINE.noiseGain.connect(ENGINE.masterGain);
+    ENGINE.noiseGain.gain.value = 0.012;
+    ENGINE.noiseSource.connect(ENGINE.noiseFilter);
+    ENGINE.noiseFilter.connect(ENGINE.noiseGain);
+    ENGINE.noiseGain.connect(ENGINE.filter);
     ENGINE.noiseSource.start();
 
     ENGINE.started = true;
   }catch(e){ ENGINE.started = false; }
 }
 
-// Update engine sound to reflect current speed & throttle
 function updateEngineSound(){
   if(!ENGINE.started || !G.audio || !ENGINE.osc1) return;
   if(G.muted) return;
 
   var t = G.audio.currentTime;
-  var speedNorm = clamp(G.speed / CFG.MAX_SPEED, 0, 1);   // 0..1
+  var rpm = G.rpm;
 
-  // Base RPM: idle ~45Hz, top ~180Hz
-  var baseFreq = 45 + speedNorm * 135;
-  // Add a throttle boost while accelerating
-  if(G.input.U && G.phase === 'playing'){
-    baseFreq += 15;
-  }
+  // Throttle signal
+  var throttle = 0;
+  if(G.input.U && G.phase === 'playing') throttle = 1;
+  if(G.input.D && G.phase === 'playing') throttle = -0.6;
 
-  // Osc1 (rumble)
-  ENGINE.osc1.frequency.setTargetAtTime(baseFreq, t, 0.08);
-  // Osc2 (harmonic = 2x base)
-  ENGINE.osc2.frequency.setTargetAtTime(baseFreq * 2.02, t, 0.08);
+  // ---- Engine RPM → base frequency ----
+  // Range: idle ~55 Hz, redline ~240 Hz
+  var baseFreq = 55 + rpm * 185;
+  if(throttle > 0) baseFreq += rpm * 8;   // slight push under load
+  if(throttle < 0) baseFreq -= 6;
 
-  // Volumes — engine louder as speed rises, plus a wobble for realism
-  var idleGain = 0.35;
-  var loadGain = 0.35 + speedNorm * 0.55;
-  if(G.input.U && G.phase === 'playing') loadGain += 0.15;
+  ENGINE.osc1.frequency.setTargetAtTime(baseFreq, t, 0.05);
+  ENGINE.osc2.frequency.setTargetAtTime(baseFreq * 2.01, t, 0.05);
+  ENGINE.osc3.frequency.setTargetAtTime(baseFreq * 4.02, t, 0.06);
 
-  ENGINE.gain1.gain.setTargetAtTime(loadGain, t, 0.1);
-  ENGINE.gain2.gain.setTargetAtTime(0.15 + speedNorm * 0.25, t, 0.1);
+  // ---- Volumes rise with RPM ----
+  var bodyGain = 0.35 + rpm * 0.45;
+  if(throttle > 0) bodyGain += 0.08;
+  ENGINE.gain1.gain.setTargetAtTime(bodyGain, t, 0.07);
+  ENGINE.gain2.gain.setTargetAtTime(0.2 + rpm * 0.35, t, 0.07);
 
-  // Filter opens as speed rises → brighter tone
-  var cutoff = 400 + speedNorm * 1400 + (G.input.U ? 300 : 0);
-  ENGINE.filter.frequency.setTargetAtTime(cutoff, t, 0.1);
+  // High rasp only above mid-RPM (like a valve opening)
+  var rasp = Math.pow(Math.max(0, rpm - 0.4), 1.4) * 0.14;
+  ENGINE.gain3.gain.setTargetAtTime(rasp, t, 0.1);
 
-  // Wind noise scales with speed
-  ENGINE.noiseGain.gain.setTargetAtTime(0.008 + speedNorm * 0.06, t, 0.15);
+  // ---- Filters open with RPM ----
+  var cutoff = 500 + rpm * 2200 + (throttle > 0 ? 400 : 0);
+  ENGINE.filter.frequency.setTargetAtTime(cutoff, t, 0.08);
+  ENGINE.peak.frequency.setTargetAtTime(180 + rpm * 480, t, 0.1);
+  ENGINE.peak.gain.setTargetAtTime(5 + rpm * 8, t, 0.1);
 
-  // Master: quiet when stopped, louder at speed
-  var masterVol = G.muted ? 0 : (0.05 + speedNorm * 0.13);
-  if(G.input.U && G.phase === 'playing') masterVol += 0.03;
-  ENGINE.masterGain.gain.setTargetAtTime(masterVol, t, 0.1);
+  // ---- Noise rises with speed (tyre roar) ----
+  var speedNorm = clamp(G.speed / CFG.MAX_SPEED, 0, 1);
+  ENGINE.noiseGain.gain.setTargetAtTime(0.006 + speedNorm * 0.035, t, 0.12);
+  ENGINE.noiseFilter.frequency.setTargetAtTime(1200 + speedNorm * 2800, t, 0.12);
+
+  // ---- Master ----
+  var masterVol = 0.06 + rpm * 0.12 + (throttle > 0 ? 0.02 : 0);
+  ENGINE.masterGain.gain.setTargetAtTime(masterVol, t, 0.08);
 }
 
 function stopEngine(){
@@ -491,13 +676,52 @@ function stopEngine(){
   try{
     if(ENGINE.osc1) ENGINE.osc1.stop();
     if(ENGINE.osc2) ENGINE.osc2.stop();
+    if(ENGINE.osc3) ENGINE.osc3.stop();
     if(ENGINE.noiseSource) ENGINE.noiseSource.stop();
   }catch(e){}
   ENGINE.started = false;
-  ENGINE.osc1 = ENGINE.osc2 = ENGINE.noiseSource = null;
+  ENGINE.osc1 = ENGINE.osc2 = ENGINE.osc3 = ENGINE.noiseSource = null;
 }
 
-// ---------- SFX (unchanged) ----------
+// Gear shift "blip" — brief pitch drop + click
+function playShiftSound(up){
+  if(!G.audio || G.muted) return;
+  try{
+    var t = G.audio.currentTime;
+    // mechanical click
+    var o = G.audio.createOscillator();
+    var g = G.audio.createGain();
+    o.type = 'square';
+    o.frequency.value = up ? 1800 : 1400;
+    g.gain.value = 0.0001;
+    g.gain.exponentialRampToValueAtTime(0.05, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    o.connect(g); g.connect(G.audio.destination);
+    o.start(t); o.stop(t + 0.06);
+  }catch(e){}
+}
+
+// Horn
+function playHorn(){
+  if(!G.audio || G.muted) return;
+  try{
+    var t = G.audio.currentTime;
+    [420, 530].forEach(function(f){
+      var o = G.audio.createOscillator();
+      var g = G.audio.createGain();
+      o.type = 'triangle';
+      o.frequency.value = f;
+      g.gain.value = 0.0001;
+      g.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
+      g.gain.setValueAtTime(0.16, t + 0.35);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      o.connect(g); g.connect(G.audio.destination);
+      o.start(t); o.stop(t + 0.6);
+    });
+  }catch(e){}
+}
+
+// SFX
 function beep(f,d,t,v){
   if(!G.audio || G.muted) return;
   try{
@@ -515,6 +739,7 @@ function sfxGood(){ beep(660,.08,'sine',.1); setTimeout(function(){ beep(880,.12
 function sfxBad(){ beep(220,.15,'sawtooth',.08); setTimeout(function(){ beep(140,.2,'sawtooth',.08); },90); }
 function sfxCam(){ beep(900,.04,'square',.05); setTimeout(function(){ beep(1300,.03,'square',.04); },40); }
 function sfxWin(){ [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ beep(f,.15,'sine',.1); }, i*110); }); }
+function sfxIndicator(){ beep(1200, 0.04, 'square', 0.05); }
 
 // ============================================================
 // LEVEL BUILD
@@ -522,9 +747,13 @@ function sfxWin(){ [523,659,784,1047].forEach(function(f,i){ setTimeout(function
 function buildLevel(){
   G.objs = [];
   var L = LEVELS[G.level-1];
+  var bg = BG();
   G.limit = L.limit;
   G.activeLightZone = null;
+  G.activePedZone = null;
+  G.activeTurnZone = null;
 
+  // trees using level palette
   for(var z=0; z<CFG.DEST_DIST+400; z+=150){
     G.objs.push({ kind:'tree', z:z, side:-1, v:(Math.random()*3)|0, checked:true });
     G.objs.push({ kind:'tree', z:z+80, side:1, v:(Math.random()*3)|0, checked:true });
@@ -548,6 +777,13 @@ function buildLevel(){
         phaseTimer: startRed ? CFG.LIGHT_RED_TIME : CFG.LIGHT_GREEN_TIME,
         line:true
       });
+    } else if(t === 'ped'){
+      G.objs.push({ kind:'sign', type:'ped', z:zSign, checked:false,
+        hornGiven:false, line:true });
+    } else if(t === 'turn'){
+      var dir = Math.random() < 0.5 ? 'left' : 'right';
+      G.objs.push({ kind:'sign', type:'turn', direction:dir, z:zSign, checked:false,
+        line:true });
     } else {
       G.objs.push({ kind:'sign', type:t, z:zSign, checked:false });
     }
@@ -589,6 +825,13 @@ function buildLevel(){
   G.parts = [];
   G.floats = [];
   G.roadScroll = 0;
+  G.indicator = 'none';
+  G.activePedZone = null;
+  G.activeTurnZone = null;
+  G.gear = 1;
+  G.rpm = CFG.IDLE_RPM;
+  updateIndicatorUI();
+  updateGearUI(false);
 
   mapFrom.textContent = L.from.icon;
   mapTo.textContent = L.to.icon;
@@ -625,9 +868,24 @@ function updateHUD(){
   mapPct.textContent = Math.round(progress*100) + '%';
 }
 
+function updateGearUI(animate){
+  gearDisplay.textContent = String(G.gear);
+  rpmFill.style.width = Math.round(G.rpm * 100) + '%';
+  if(animate){
+    gearDisplay.classList.remove('shift');
+    void gearDisplay.offsetWidth;
+    gearDisplay.classList.add('shift');
+  }
+}
+
 function pulseLimit(){
   limitEl.classList.add('pulse');
   setTimeout(function(){ limitEl.classList.remove('pulse'); }, 300);
+}
+
+function updateIndicatorUI(){
+  indLeft.classList.toggle('on', G.indicator === 'left');
+  indRight.classList.toggle('on', G.indicator === 'right');
 }
 
 // ============================================================
@@ -686,6 +944,43 @@ function spawnConfetti(){
 function flashCamera(){ G.flashT = 0.15; sfxCam(); }
 
 // ============================================================
+// GEAR SHIFTING
+// ============================================================
+function shiftTo(gear){
+  if(G.phase !== 'playing') return;
+  gear = clamp(gear, 1, 5);
+  if(gear === G.gear) return;
+
+  var up = gear > G.gear;
+  G.gear = gear;
+
+  // If shifting down and we're going too fast for the new gear,
+  // the RPM will spike (that's realistic).
+  // If shifting up, RPM naturally drops.
+  updateRPMFromSpeed();
+
+  playShiftSound(up);
+  updateGearUI(true);
+}
+
+function updateRPMFromSpeed(){
+  // RPM within current gear: 0 (idle) at gear's min speed, 1 (redline) at gear max
+  var gMax = CFG.GEAR_MAX[G.gear-1];
+  var gMin = G.gear === 1 ? 0 : CFG.GEAR_MAX[G.gear-2];
+  var span = gMax - gMin;
+  var raw = span > 0 ? (G.speed - gMin) / span : 0;
+  // clamp and let idle be a floor
+  var rpmNorm = clamp(raw, 0, 1);
+  // Over-rev: if speed > gear max, rpm goes above 1 (redline bounce)
+  if(G.speed > gMax){
+    rpmNorm = 1 + Math.min(0.15, (G.speed - gMax) / 40);
+  }
+  // Idle floor
+  rpmNorm = Math.max(CFG.IDLE_RPM, rpmNorm);
+  G.rpm = rpmNorm;
+}
+
+// ============================================================
 // VIEW
 // ============================================================
 var VIEW = { roadW:0, roadX:0, roadCenter:0, playerY:0, pxPerUnit:0.32 };
@@ -705,26 +1000,60 @@ function worldToScreenY(worldZ){
 // DRAW
 // ============================================================
 function drawGrassBg(){
-  ctx.fillStyle = CFG.C.grass;
+  var bg = BG();
+  ctx.fillStyle = bg.grass;
   ctx.fillRect(0,0,cv.width,cv.height);
-
-  ctx.fillStyle = CFG.C.grassD;
+  ctx.fillStyle = bg.grassD;
   var stripeH = 40;
   var offset = (G.roadScroll * VIEW.pxPerUnit) % stripeH;
   for(var y = -stripeH + offset; y < cv.height; y += stripeH){
     ctx.fillRect(0, y, VIEW.roadX, stripeH*0.5);
     ctx.fillRect(VIEW.roadX + VIEW.roadW, y, cv.width - VIEW.roadX - VIEW.roadW, stripeH*0.5);
   }
+
+  // Draw simple houses on the sides for extra level variety
+  drawRoadsideProps();
+}
+
+function drawRoadsideProps(){
+  var bg = BG();
+  var palette = bg.houseColors;
+  // world positions for houses — derived from dist so they repeat
+  var spacing = 500;
+  var baseZ = Math.floor(G.dist / spacing) * spacing;
+  for(var i = 0; i < 8; i++){
+    var z = baseZ + i * spacing;
+    var y = worldToScreenY(z);
+    if(y < -120 || y > cv.height + 120) continue;
+    var side = (i % 2 === 0) ? -1 : 1;
+    var sideX = side < 0
+      ? VIEW.roadX * 0.5
+      : VIEW.roadX + VIEW.roadW + (cv.width - VIEW.roadX - VIEW.roadW) * 0.5;
+    var hw = 60, hh = 50;
+    var idx = (Math.floor(z/spacing) + 100) % palette.length;
+    ctx.fillStyle = palette[idx];
+    ctx.fillRect(sideX - hw/2, y - hh/2, hw, hh);
+    // roof
+    ctx.fillStyle = '#5a3f2e';
+    ctx.beginPath();
+    ctx.moveTo(sideX - hw/2 - 5, y - hh/2);
+    ctx.lineTo(sideX, y - hh/2 - 18);
+    ctx.lineTo(sideX + hw/2 + 5, y - hh/2);
+    ctx.closePath();
+    ctx.fill();
+    // window
+    ctx.fillStyle = '#ffd98a';
+    ctx.fillRect(sideX - 8, y - 6, 16, 14);
+  }
 }
 
 function drawRoad(){
-  ctx.fillStyle = CFG.C.asphalt;
+  var bg = BG();
+  ctx.fillStyle = bg.road;
   ctx.fillRect(VIEW.roadX, 0, VIEW.roadW, cv.height);
-
-  ctx.fillStyle = 'rgba(220,235,245,0.6)';
+  ctx.fillStyle = bg.roadEdge;
   ctx.fillRect(VIEW.roadX + 4, 0, 3, cv.height);
   ctx.fillRect(VIEW.roadX + VIEW.roadW - 7, 0, 3, cv.height);
-
   ctx.fillStyle = CFG.C.lane;
   var dashH = 40, gapH = 40, total = dashH + gapH;
   var offset = (G.roadScroll * VIEW.pxPerUnit) % total;
@@ -734,20 +1063,38 @@ function drawRoad(){
   }
 }
 
-function drawLightLines(){
+function drawStopLines(){
   for(var i=0;i<G.objs.length;i++){
     var o = G.objs[i];
-    if(o.kind === 'sign' && o.type === 'light' && o.line){
+    if(o.kind === 'sign' && o.line){
       var y = worldToScreenY(o.z);
       if(y < -20 || y > cv.height + 20) continue;
 
-      ctx.fillStyle = '#FBF7F0';
-      ctx.fillRect(VIEW.roadX + 8, y - 3, VIEW.roadW - 16, 6);
+      var lineColor = '#FBF7F0';
+      if(o.type === 'ped'){
+        ctx.fillStyle = lineColor;
+        for(var x = VIEW.roadX + 8; x < VIEW.roadX + VIEW.roadW - 16; x += 18){
+          ctx.fillRect(x, y - 4, 10, 8);
+        }
+      } else if(o.type === 'turn'){
+        ctx.fillStyle = '#ffd76b';
+        ctx.fillRect(VIEW.roadX + 8, y - 3, VIEW.roadW - 16, 6);
+      } else {
+        ctx.fillStyle = lineColor;
+        ctx.fillRect(VIEW.roadX + 8, y - 3, VIEW.roadW - 16, 6);
+      }
 
-      if(G.activeLightZone && G.activeLightZone.ref === o){
+      if((o.type === 'light' && G.activeLightZone && G.activeLightZone.ref === o) ||
+         (o.type === 'ped' && G.activePedZone && G.activePedZone.ref === o) ||
+         (o.type === 'turn' && G.activeTurnZone && G.activeTurnZone.ref === o)){
         ctx.save();
-        ctx.shadowColor = o.phase === 'red' ? CFG.C.red : CFG.C.green;
-        ctx.shadowBlur = 14;
+        var gc = CFG.C.green;
+        if(o.type === 'light') gc = o.phase === 'red' ? CFG.C.red : CFG.C.green;
+        else if(o.type === 'ped') gc = CFG.C.yellow;
+        else if(o.type === 'turn') gc = o.direction === 'left' ? '#ff9f43' : '#4C7CF0';
+        ctx.shadowColor = gc;
+        ctx.shadowBlur = 16;
+        ctx.fillStyle = gc;
         ctx.fillRect(VIEW.roadX + 8, y - 3, VIEW.roadW - 16, 6);
         ctx.restore();
       }
@@ -757,7 +1104,6 @@ function drawLightLines(){
 
 function drawObjects(){
   var camZ = G.dist;
-
   for(var i=G.objs.length-1; i>=0; i--){
     var o = G.objs[i];
     var dz = o.z - camZ;
@@ -770,21 +1116,18 @@ function drawObjects(){
     else if(o.kind === 'cam') drawCamera(o, y);
     else if(o.kind === 'car') drawOtherCar(o, y);
   }
-
   var destY = worldToScreenY(CFG.DEST_DIST);
   if(destY > -100 && destY < cv.height + 100) drawDestination(destY);
 }
 
 function drawTree(o, y){
+  var bg = BG();
   var sideX = o.side < 0
     ? VIEW.roadX * 0.5
     : VIEW.roadX + VIEW.roadW + (cv.width - VIEW.roadX - VIEW.roadW) * 0.5;
-
-  ctx.fillStyle = '#5a3f2e';
+  ctx.fillStyle = bg.trunk;
   ctx.fillRect(sideX - 4, y - 6, 8, 14);
-
-  var greens = ['#3d8b55', '#357a4b', '#4a9c64'];
-  ctx.fillStyle = greens[o.v];
+  ctx.fillStyle = bg.treeGreens[o.v];
   ctx.beginPath();
   ctx.arc(sideX, y - 12, 14, 0, Math.PI*2);
   ctx.fill();
@@ -814,7 +1157,6 @@ function drawSign(o, y){
     ctx.fillStyle = '#1a1e22';
     roundRect(ctx, -hw/2, -hh/2, hw, hh, 6); ctx.fill();
     ctx.strokeStyle = '#0a0d10'; ctx.lineWidth = 2; ctx.stroke();
-
     var lights = [
       { color: CFG.C.red,   on: o.phase === 'red'   },
       { color: CFG.C.yellow,on: false },
@@ -837,20 +1179,43 @@ function drawSign(o, y){
       }
     }
   } else if(o.type === 'ped'){
-    ctx.fillStyle = CFG.C.yellow;
-    ctx.beginPath();
-    ctx.moveTo(0, -size*0.5); ctx.lineTo(size*0.5, 0);
-    ctx.lineTo(0, size*0.5); ctx.lineTo(-size*0.5, 0);
-    ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#1E2024'; ctx.lineWidth = 3; ctx.stroke();
-    ctx.fillStyle = '#1E2024';
+    ctx.fillStyle = '#1a56c9';
+    ctx.beginPath(); ctx.arc(0,0,size*0.5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0,0,size*0.46,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle = '#fff';
     var s = size*0.26;
-    ctx.beginPath(); ctx.arc(0, -s*0.5, s*0.22, 0, Math.PI*2); ctx.fill();
-    ctx.fillRect(-s*0.12, -s*0.3, s*0.24, s*0.7);
-    ctx.fillRect(-s*0.4, -s*0.05, s*0.3, s*0.14);
-    ctx.fillRect(s*0.1, -s*0.05, s*0.3, s*0.14);
-    ctx.fillRect(-s*0.15, s*0.35, s*0.12, s*0.4);
-    ctx.fillRect(s*0.03, s*0.35, s*0.12, s*0.4);
+    ctx.beginPath(); ctx.arc(-s*0.05, -s*0.55, s*0.22, 0, Math.PI*2); ctx.fill();
+    ctx.fillRect(-s*0.18, -s*0.35, s*0.26, s*0.7);
+    ctx.fillRect(-s*0.45, -s*0.1, s*0.3, s*0.14);
+    ctx.fillRect(s*0.05, -s*0.1, s*0.3, s*0.14);
+    ctx.fillRect(-s*0.22, s*0.32, s*0.14, s*0.42);
+    ctx.fillRect(s*0.02, s*0.32, s*0.14, s*0.42);
+  } else if(o.type === 'turn'){
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(0,0,size*0.5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = CFG.C.red; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0,0,size*0.46,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle = '#1E2024';
+    if(o.direction === 'left'){
+      ctx.beginPath();
+      ctx.moveTo(0, size*0.25); ctx.lineTo(0, -size*0.05);
+      ctx.lineTo(-size*0.18, -size*0.05); ctx.lineTo(-size*0.18, 0.05);
+      ctx.lineTo(0, 0.05); ctx.lineTo(0, 0.25); ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-size*0.35, -size*0.05);
+      ctx.lineTo(-size*0.12, -size*0.22);
+      ctx.lineTo(-size*0.12, size*0.12); ctx.closePath(); ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(0, size*0.25); ctx.lineTo(0, -size*0.05);
+      ctx.lineTo(size*0.18, -size*0.05); ctx.lineTo(size*0.18, 0.05);
+      ctx.lineTo(0, 0.05); ctx.lineTo(0, 0.25); ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(size*0.35, -size*0.05);
+      ctx.lineTo(size*0.12, -size*0.22);
+      ctx.lineTo(size*0.12, size*0.12); ctx.closePath(); ctx.fill();
+    }
   } else if(o.type === 'yield'){
     ctx.fillStyle = '#fff';
     ctx.beginPath();
@@ -877,7 +1242,6 @@ function drawCamera(o, y){
   ctx.beginPath(); ctx.arc(camX, y - 4, 7, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#4a9cff';
   ctx.beginPath(); ctx.arc(camX, y - 4, 4, 0, Math.PI*2); ctx.fill();
-
   ctx.fillStyle = '#fff';
   ctx.beginPath(); ctx.arc(camX, y + 30, 14, 0, Math.PI*2); ctx.fill();
   ctx.strokeStyle = CFG.C.red; ctx.lineWidth = 3;
@@ -909,10 +1273,8 @@ function drawDestination(y){
   ctx.fillStyle = CFG.C.green;
   ctx.beginPath(); ctx.arc(cx, y, 36, 0, Math.PI*2); ctx.fill();
   ctx.restore();
-
   ctx.fillStyle = '#fff';
   ctx.beginPath(); ctx.arc(cx, y, 28, 0, Math.PI*2); ctx.fill();
-
   ctx.font = '32px system-ui';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(L.to.icon, cx, y + 1);
@@ -956,6 +1318,26 @@ function drawPlayerCar(){
   ctx.arc(cx + w*0.3, cy - h*0.48, 4, 0, Math.PI*2);
   ctx.fill();
 
+  var indBlink = (Math.floor(performance.now() / 250) % 2) === 0;
+  if(G.indicator === 'left' && indBlink){
+    ctx.save();
+    ctx.shadowColor = '#ffcf40'; ctx.shadowBlur = 18;
+    ctx.fillStyle = '#ffcf40';
+    ctx.beginPath();
+    ctx.arc(cx - w*0.52, cy - h*0.1, 5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+  if(G.indicator === 'right' && indBlink){
+    ctx.save();
+    ctx.shadowColor = '#ffcf40'; ctx.shadowBlur = 18;
+    ctx.fillStyle = '#ffcf40';
+    ctx.beginPath();
+    ctx.arc(cx + w*0.52, cy - h*0.1, 5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   if(G.input.D){ ctx.save(); ctx.shadowColor = '#ff2020'; ctx.shadowBlur = 14; }
   ctx.fillStyle = G.input.D ? '#ff3030' : '#8a1a1a';
   ctx.beginPath();
@@ -963,6 +1345,18 @@ function drawPlayerCar(){
   ctx.arc(cx + w*0.3, cy + h*0.48, 4, 0, Math.PI*2);
   ctx.fill();
   if(G.input.D) ctx.restore();
+
+  // Redline visual: exhaust glow at high RPM
+  if(G.rpm > 0.9){
+    var glow = clamp((G.rpm - 0.9) / 0.2, 0, 1);
+    ctx.save();
+    ctx.globalAlpha = glow * 0.6 * (0.7 + Math.random()*0.3);
+    ctx.fillStyle = '#ff7b30';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + h*0.55, w*0.4, 8, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
 
   if(G.speed > 60){
     var alpha = clamp((G.speed - 60) / 80, 0, 1) * 0.5;
@@ -975,6 +1369,16 @@ function drawPlayerCar(){
       ctx.lineTo(ox, cy + h*0.5 + 24 + Math.random()*20);
       ctx.stroke();
     }
+  }
+
+  if(G.hornActive){
+    var pulseT = performance.now() / 250;
+    var rr = 60 + ((pulseT % 1) * 40);
+    ctx.strokeStyle = 'rgba(255,207,64,' + (1 - (pulseT % 1)) + ')';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy - h*0.3, rr, 0, Math.PI*2);
+    ctx.stroke();
   }
 }
 
@@ -1043,12 +1447,26 @@ function update(dt){
     }
   }
 
+  // ---- ACCELERATION (gearbox-aware) ----
   var targetAccel;
   if(G.input.U) targetAccel = CFG.ACCEL;
   else if(G.input.D) targetAccel = -CFG.BRAKE;
   else targetAccel = -CFG.DECEL;
 
+  // If in gear 1, cap the effective top speed so 1st gear feels short
+  var gMax = CFG.GEAR_MAX[G.gear-1];
+  var speedBefore = G.speed;
   G.speed = clamp(G.speed + targetAccel * dt, 0, CFG.MAX_SPEED);
+
+  // In 1st gear, accelerating beyond gear max is slow (soft limiter)
+  if(G.speed > gMax && G.gear === 1){
+    // soft cap for 1st gear
+    G.speed = gMax + (G.speed - gMax) * 0.05;
+  }
+
+  // Update RPM
+  updateRPMFromSpeed();
+  updateGearUI(false);
 
   if(G.input.L) G.px = clamp(G.px - CFG.STEER_SPEED * dt, 0.12, 0.88);
   if(G.input.R) G.px = clamp(G.px + CFG.STEER_SPEED * dt, 0.12, 0.88);
@@ -1070,7 +1488,6 @@ function update(dt){
     if(o.kind !== 'sign' || o.type !== 'light') continue;
     var dz2 = o.z - G.dist;
     if(dz2 < -100 || dz2 > 800) continue;
-
     o.phaseTimer -= dt;
     if(o.phaseTimer <= 0){
       if(o.phase === 'red'){
@@ -1083,7 +1500,7 @@ function update(dt){
     }
   }
 
-  updateLightZone();
+  updateZones();
 
   for(var k=0;k<G.objs.length;k++){
     var obj = G.objs[k];
@@ -1098,22 +1515,45 @@ function update(dt){
   updateHUD();
 }
 
-function updateLightZone(){
-  var nearest = null, nearestDz = 1e9;
+function updateZones(){
+  var nearestL = null, nearestLDz = 1e9;
+  var nearestP = null, nearestPDz = 1e9;
+  var nearestT = null, nearestTDz = 1e9;
+
   for(var i=0;i<G.objs.length;i++){
     var o = G.objs[i];
-    if(o.kind !== 'sign' || o.type !== 'light') continue;
+    if(o.kind !== 'sign') continue;
     var dz = o.z - G.dist;
-    if(dz < -30 || dz > CFG.LIGHT_WINDOW) continue;
-    if(dz < nearestDz){ nearestDz = dz; nearest = o; }
-  }
-  if(nearest){
-    if(!G.activeLightZone || G.activeLightZone.ref !== nearest){
-      G.activeLightZone = { ref: nearest };
+    if(dz < -30) continue;
+
+    if(o.type === 'light' && dz <= CFG.LIGHT_WINDOW){
+      if(dz < nearestLDz){ nearestLDz = dz; nearestL = o; }
+    } else if(o.type === 'ped' && dz <= CFG.HORN_WINDOW){
+      if(dz < nearestPDz){ nearestPDz = dz; nearestP = o; }
+    } else if(o.type === 'turn' && dz <= CFG.TURN_WINDOW){
+      if(dz < nearestTDz){ nearestTDz = dz; nearestT = o; }
     }
-  } else {
-    G.activeLightZone = null;
   }
+
+  if(nearestL){
+    if(!G.activeLightZone || G.activeLightZone.ref !== nearestL){
+      G.activeLightZone = { ref: nearestL };
+    }
+  } else G.activeLightZone = null;
+
+  if(nearestP){
+    if(!G.activePedZone || G.activePedZone.ref !== nearestP){
+      G.activePedZone = { ref: nearestP };
+    }
+  } else G.activePedZone = null;
+
+  if(nearestT){
+    if(!G.activeTurnZone || G.activeTurnZone.ref !== nearestT){
+      G.activeTurnZone = { ref: nearestT };
+    }
+  } else G.activeTurnZone = null;
+
+  if(G.hornCooldown > 0) G.hornCooldown -= 1/60;
 }
 
 // ============================================================
@@ -1134,12 +1574,29 @@ function handleSignPass(sign){
     }
     G.activeLightZone = null;
   } else if(sign.type === 'ped'){
-    if(G.speed <= 15){
-      addScore(10, 'Yielded to pedestrians', CFG.C.green);
-      sfxGood();
+    if(sign.hornGiven){
+      if(G.speed <= 40){
+        addScore(12, 'Horn + slowing ✓', CFG.C.green);
+        sfxGood();
+      } else {
+        addScore(6, 'Horn given (fast)', CFG.C.green);
+      }
     } else {
-      loseCredit('Did not yield to pedestrians!');
+      loseCredit('No horn at pedestrian crossing!');
     }
+    G.activePedZone = null;
+  } else if(sign.type === 'turn'){
+    var correct = (sign.direction === 'left' && G.indicator === 'left') ||
+                  (sign.direction === 'right' && G.indicator === 'right');
+    if(correct){
+      addScore(10, 'Indicator on ✓', CFG.C.green);
+      sfxGood();
+      G.indicator = 'none';
+      updateIndicatorUI();
+    } else {
+      loseCredit('Indicator not used!');
+    }
+    G.activeTurnZone = null;
   } else if(sign.type === 'yield'){
     if(G.speed <= 25){
       addScore(8, 'Yield respected', CFG.C.green);
@@ -1159,6 +1616,37 @@ function handleCameraPass(cam){
   } else {
     loseCredit('Speeding at camera!');
   }
+}
+
+// ============================================================
+// HORN
+// ============================================================
+function pressHorn(){
+  if(G.phase !== 'playing') return;
+  G.hornActive = true;
+  if(G.hornCooldown > 0) return;
+  G.hornCooldown = 0.35;
+  playHorn();
+
+  if(G.activePedZone && !G.activePedZone.ref.hornGiven){
+    G.activePedZone.ref.hornGiven = true;
+    addFloat('📣', CFG.C.yellow);
+  }
+}
+function releaseHorn(){ G.hornActive = false; }
+
+// ============================================================
+// INDICATORS
+// ============================================================
+function toggleIndicator(side){
+  if(G.phase !== 'playing') return;
+  if(G.indicator === side){
+    G.indicator = 'none';
+  } else {
+    G.indicator = side;
+    sfxIndicator();
+  }
+  updateIndicatorUI();
 }
 
 // ============================================================
@@ -1185,7 +1673,8 @@ function startLevel(){
 function endGame(reason){
   G.phase = 'over';
   G.levelAdvancing = false;
-  // silence engine
+  G.indicator = 'none';
+  updateIndicatorUI();
   if(ENGINE.masterGain && G.audio){
     try{ ENGINE.masterGain.gain.setTargetAtTime(0, G.audio.currentTime, 0.05); }catch(e){}
   }
@@ -1208,6 +1697,8 @@ function winLevel(){
     G.level++;
     G.speed = 0;
     G.dist = CFG.DEST_DIST;
+    G.indicator = 'none';
+    updateIndicatorUI();
     sfxGood();
   } else {
     G.phase = 'win';
@@ -1232,6 +1723,11 @@ function restartGame(){
   G.carryOver = false;
   G.levelAdvancing = false;
   G.levelAdvanceTimer = 0;
+  G.indicator = 'none';
+  G.gear = 1;
+  G.rpm = CFG.IDLE_RPM;
+  updateGearUI(false);
+  updateIndicatorUI();
   overScreen.classList.add('hidden');
   winScreen.classList.add('hidden');
   startLevel();
@@ -1253,6 +1749,11 @@ function goHome(){
   G.carryOver = false;
   G.levelAdvancing = false;
   G.levelAdvanceTimer = 0;
+  G.indicator = 'none';
+  G.gear = 1;
+  G.rpm = CFG.IDLE_RPM;
+  updateGearUI(false);
+  updateIndicatorUI();
   if(ENGINE.masterGain && G.audio){
     try{ ENGINE.masterGain.gain.setTargetAtTime(0, G.audio.currentTime, 0.1); }catch(e){}
   }
@@ -1268,14 +1769,12 @@ function loop(now){
   G.last = now;
 
   if(G.phase === 'playing') update(dt);
-
-  // update engine sound every frame
   if(G.phase === 'playing') updateEngineSound();
 
   computeView();
   drawGrassBg();
   drawRoad();
-  drawLightLines();
+  drawStopLines();
   drawObjects();
   drawPlayerCar();
   drawParticles();
@@ -1295,10 +1794,38 @@ function setKey(key, val){
   else if(key === 'ArrowDown' || key === 's' || key === 'S') G.input.D = val;
 }
 window.addEventListener('keydown', function(e){
-  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].indexOf(e.key) !== -1) e.preventDefault();
-  setKey(e.key, true);
+  var k = e.key;
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].indexOf(k) !== -1) e.preventDefault();
+
+  // Gears 1-5
+  if(k === '1' || k === '2' || k === '3' || k === '4' || k === '5'){
+    if(!e.repeat){ shiftTo(parseInt(k, 10)); }
+    return;
+  }
+
+  if(k === ' ' || k === 'Spacebar'){
+    if(!e.repeat) pressHorn();
+    return;
+  }
+  if(k === 'Control' || e.ctrlKey && !G._ctrlDown){
+    if(!G._ctrlDown){ G._ctrlDown = true; toggleIndicator('left'); }
+    return;
+  }
+  if(k === 'Alt' || e.altKey && !G._altDown){
+    if(!G._altDown){ G._altDown = true; toggleIndicator('right'); }
+    return;
+  }
+
+  setKey(k, true);
 });
-window.addEventListener('keyup', function(e){ setKey(e.key, false); });
+window.addEventListener('keyup', function(e){
+  var k = e.key;
+  if(k === ' ' || k === 'Spacebar'){ releaseHorn(); return; }
+  if(k === 'Control'){ G._ctrlDown = false; return; }
+  if(k === 'Alt'){ G._altDown = false; return; }
+  setKey(k, false);
+});
+window.addEventListener('contextmenu', function(e){ e.preventDefault(); });
 
 function bindTouch(el, key){
   el.addEventListener('touchstart', function(e){ e.preventDefault(); G.input[key] = true; }, {passive:false});
@@ -1313,6 +1840,9 @@ bindTouch($('tR'), 'R');
 bindTouch($('tA'), 'U');
 bindTouch($('tB'), 'D');
 
+indLeft.addEventListener('click', function(){ toggleIndicator('left'); });
+indRight.addEventListener('click', function(){ toggleIndicator('right'); });
+
 // ============================================================
 // BUTTONS
 // ============================================================
@@ -1326,14 +1856,13 @@ $('homeBtn').addEventListener('click', goHome);
 $('playBtn').addEventListener('click', restartGame);
 $('winHomeBtn').addEventListener('click', goHome);
 
-// Sound toggle
 soundToggle.addEventListener('click', function(){
   G.muted = !G.muted;
   soundToggle.textContent = G.muted ? '🔇' : '🔊';
   soundToggle.classList.toggle('muted', G.muted);
   if(ENGINE.masterGain && G.audio){
     try{
-      ENGINE.masterGain.gain.setTargetAtTime(G.muted ? 0 : 0.14, G.audio.currentTime, 0.1);
+      ENGINE.masterGain.gain.setTargetAtTime(G.muted ? 0 : 0.13, G.audio.currentTime, 0.1);
     }catch(e){}
   }
 });
