@@ -42,6 +42,21 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 .credits-low .icon,.credits-low .val{color:var(--red);animation:blink .8s infinite alternate}
 @keyframes blink{from{opacity:.6}to{opacity:1}}
 
+/* Sound toggle */
+.sound-toggle{
+  position:absolute;top:78px;left:14px;z-index:15;
+  background:var(--hud);backdrop-filter:blur(6px);
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;cursor:pointer;
+  border:2px solid #ffffff30;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  transition:transform .1s;
+  user-select:none;
+}
+.sound-toggle:active{transform:scale(0.92)}
+.sound-toggle.muted{opacity:0.55}
+
 .touch{position:absolute;bottom:20px;left:0;width:100%;display:none;
   justify-content:space-between;padding:0 20px;z-index:20;pointer-events:none}
 .touch>div{display:flex;gap:14px;pointer-events:auto}
@@ -138,7 +153,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
         <span class="streak" id="streak">🔥0</span></div>
     </div>
     <div class="hud-box">
-      <div class="hud-item"><span class="icon">⏱</span><span class="val" id="timer">01:30</span></div>
+      <div class="hud-item"><span class="icon">⏱</span><span class="val" id="timer">01:40</span></div>
       <div class="hud-item" style="margin-left:6px"><span class="icon">🏁</span><span class="val" id="levelNum">1/4</span></div>
     </div>
     <div class="hud-box">
@@ -148,6 +163,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
       </div>
     </div>
   </div>
+
+  <div class="sound-toggle" id="soundToggle" title="Toggle engine sound">🔊</div>
 
   <div class="mmap">
     <div class="lbl"><span class="from" id="mapFrom">🏠</span><span class="to">→</span><span class="to" id="mapTo">🏟</span></div>
@@ -226,19 +243,19 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 'use strict';
 
 // ============================================================
-// CONFIG  — FAST car, longer distances
+// CONFIG
 // ============================================================
 var CFG = {
   START_CREDITS: 100,
   VIOLATION_COST: 2,
-  MAX_SPEED: 140,          // ↑↑ much faster top speed
-  ACCEL: 18,               // ↑↑ quick pick-up
+  MAX_SPEED: 140,
+  ACCEL: 18,
   BRAKE: 70,
   DECEL: 8,
-  LEVEL_TIME: 100,         // ↑ more time for longer routes
-  DEST_DIST: 2400,         // ↑↑ much longer routes (3× longer)
-  STEER_SPEED: 2.4,        // ↑ sharper steering
-  SIGN_GAP_MIN: 900,       // spaced further since route is longer
+  LEVEL_TIME: 100,
+  DEST_DIST: 2400,
+  STEER_SPEED: 2.4,
+  SIGN_GAP_MIN: 900,
   SIGN_GAP_MAX: 1200,
   CAM_GAP_MIN: 1100,
   CAM_GAP_MAX: 1400,
@@ -258,42 +275,18 @@ var CFG = {
 // LEVELS
 // ============================================================
 var LEVELS = [
-  {
-    name:'Residential',
-    cue:'40 km/h · Watch for lights',
-    limit:40,
-    signMix:['speed','light'],
-    cars:0.10,
-    from:{ icon:'🏠', name:'Home' },
-    to:  { icon:'🏟', name:'Stadium' }
-  },
-  {
-    name:'Town Center',
-    cue:'50 km/h · Lights & pedestrians',
-    limit:50,
-    signMix:['speed','light','ped'],
-    cars:0.18,
-    from:{ icon:'🏟', name:'Stadium' },
-    to:  { icon:'🏫', name:'School' }
-  },
-  {
-    name:'School Zone',
-    cue:'30 km/h · Slow & careful',
-    limit:30,
-    signMix:['speed','light','ped','yield'],
-    cars:0.22,
-    from:{ icon:'🏫', name:'School' },
-    to:  { icon:'🏥', name:'Hospital' }
-  },
-  {
-    name:'City Highway',
-    cue:'60 km/h · Final stretch',
-    limit:60,
-    signMix:['speed','light','yield'],
-    cars:0.30,
-    from:{ icon:'🏥', name:'Hospital' },
-    to:  { icon:'🏟', name:'Grand Arena' }
-  }
+  { name:'Residential', cue:'40 km/h · Watch for lights', limit:40,
+    signMix:['speed','light'], cars:0.10,
+    from:{ icon:'🏠', name:'Home' }, to:{ icon:'🏟', name:'Stadium' } },
+  { name:'Town Center', cue:'50 km/h · Lights & pedestrians', limit:50,
+    signMix:['speed','light','ped'], cars:0.18,
+    from:{ icon:'🏟', name:'Stadium' }, to:{ icon:'🏫', name:'School' } },
+  { name:'School Zone', cue:'30 km/h · Slow & careful', limit:30,
+    signMix:['speed','light','ped','yield'], cars:0.22,
+    from:{ icon:'🏫', name:'School' }, to:{ icon:'🏥', name:'Hospital' } },
+  { name:'City Highway', cue:'60 km/h · Final stretch', limit:60,
+    signMix:['speed','light','yield'], cars:0.30,
+    from:{ icon:'🏥', name:'Hospital' }, to:{ icon:'🏟', name:'Grand Arena' } }
 ];
 
 // ============================================================
@@ -314,6 +307,7 @@ var mapFrom=$('mapFrom'), mapTo=$('mapTo'), mapDestIcon=$('mapDestIcon');
 var mapLevelName=$('mapLevelName'), mapPct=$('mapPct');
 var overMsg=$('overMsg'), overCredits=$('overCredits'), overScore=$('overScore'), overLevel=$('overLevel');
 var winScore=$('winScore'), winCredits=$('winCredits'), winTime=$('winTime');
+var soundToggle=$('soundToggle');
 
 // ============================================================
 // RESIZE
@@ -350,7 +344,8 @@ var G = {
   activeLightZone:null,
   levelAdvanceTimer: 0,
   levelAdvancing: false,
-  carryOver: false
+  carryOver: false,
+  muted: false
 };
 
 // ============================================================
@@ -365,15 +360,146 @@ function fmt(s){
 }
 
 // ============================================================
-// AUDIO
+// AUDIO — engine sound + effects
 // ============================================================
+var ENGINE = {
+  ctx: null,
+  // main engine nodes
+  osc1: null,       // low rumble
+  osc2: null,       // higher harmonic
+  gain1: null,
+  gain2: null,
+  filter: null,
+  masterGain: null,
+  // secondary noise (road / wind)
+  noiseSource: null,
+  noiseGain: null,
+  started: false
+};
+
 function initAudio(){
   if(G.audio) return;
   try{ G.audio = new (window.AudioContext||window.webkitAudioContext)(); }
   catch(e){ G.audio = null; }
 }
+
+// Start the engine sound loop
+function startEngine(){
+  if(!G.audio || ENGINE.started) return;
+  try{
+    // ---- Master gain ----
+    ENGINE.masterGain = G.audio.createGain();
+    ENGINE.masterGain.gain.value = G.muted ? 0 : 0.14;
+    ENGINE.masterGain.connect(G.audio.destination);
+
+    // ---- Filter for warmth ----
+    ENGINE.filter = G.audio.createBiquadFilter();
+    ENGINE.filter.type = 'lowpass';
+    ENGINE.filter.frequency.value = 500;
+    ENGINE.filter.Q.value = 3;
+    ENGINE.filter.connect(ENGINE.masterGain);
+
+    // ---- Oscillator 1: low rumble ----
+    ENGINE.osc1 = G.audio.createOscillator();
+    ENGINE.osc1.type = 'sawtooth';
+    ENGINE.osc1.frequency.value = 45;
+    ENGINE.gain1 = G.audio.createGain();
+    ENGINE.gain1.gain.value = 0.7;
+    ENGINE.osc1.connect(ENGINE.gain1);
+    ENGINE.gain1.connect(ENGINE.filter);
+    ENGINE.osc1.start();
+
+    // ---- Oscillator 2: harmonic ----
+    ENGINE.osc2 = G.audio.createOscillator();
+    ENGINE.osc2.type = 'square';
+    ENGINE.osc2.frequency.value = 90;
+    ENGINE.gain2 = G.audio.createGain();
+    ENGINE.gain2.gain.value = 0.25;
+    ENGINE.osc2.connect(ENGINE.gain2);
+    ENGINE.gain2.connect(ENGINE.filter);
+    ENGINE.osc2.start();
+
+    // ---- Noise for road/wind ----
+    var bufferSize = 2 * G.audio.sampleRate;
+    var noiseBuffer = G.audio.createBuffer(1, bufferSize, G.audio.sampleRate);
+    var output = noiseBuffer.getChannelData(0);
+    for(var i = 0; i < bufferSize; i++){
+      output[i] = Math.random() * 2 - 1;
+    }
+    ENGINE.noiseSource = G.audio.createBufferSource();
+    ENGINE.noiseSource.buffer = noiseBuffer;
+    ENGINE.noiseSource.loop = true;
+    ENGINE.noiseGain = G.audio.createGain();
+    ENGINE.noiseGain.gain.value = 0.02;
+    // low-pass filter the noise for wind feel
+    var noiseFilter = G.audio.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 800;
+    noiseFilter.Q.value = 0.6;
+    ENGINE.noiseSource.connect(noiseFilter);
+    noiseFilter.connect(ENGINE.noiseGain);
+    ENGINE.noiseGain.connect(ENGINE.masterGain);
+    ENGINE.noiseSource.start();
+
+    ENGINE.started = true;
+  }catch(e){ ENGINE.started = false; }
+}
+
+// Update engine sound to reflect current speed & throttle
+function updateEngineSound(){
+  if(!ENGINE.started || !G.audio || !ENGINE.osc1) return;
+  if(G.muted) return;
+
+  var t = G.audio.currentTime;
+  var speedNorm = clamp(G.speed / CFG.MAX_SPEED, 0, 1);   // 0..1
+
+  // Base RPM: idle ~45Hz, top ~180Hz
+  var baseFreq = 45 + speedNorm * 135;
+  // Add a throttle boost while accelerating
+  if(G.input.U && G.phase === 'playing'){
+    baseFreq += 15;
+  }
+
+  // Osc1 (rumble)
+  ENGINE.osc1.frequency.setTargetAtTime(baseFreq, t, 0.08);
+  // Osc2 (harmonic = 2x base)
+  ENGINE.osc2.frequency.setTargetAtTime(baseFreq * 2.02, t, 0.08);
+
+  // Volumes — engine louder as speed rises, plus a wobble for realism
+  var idleGain = 0.35;
+  var loadGain = 0.35 + speedNorm * 0.55;
+  if(G.input.U && G.phase === 'playing') loadGain += 0.15;
+
+  ENGINE.gain1.gain.setTargetAtTime(loadGain, t, 0.1);
+  ENGINE.gain2.gain.setTargetAtTime(0.15 + speedNorm * 0.25, t, 0.1);
+
+  // Filter opens as speed rises → brighter tone
+  var cutoff = 400 + speedNorm * 1400 + (G.input.U ? 300 : 0);
+  ENGINE.filter.frequency.setTargetAtTime(cutoff, t, 0.1);
+
+  // Wind noise scales with speed
+  ENGINE.noiseGain.gain.setTargetAtTime(0.008 + speedNorm * 0.06, t, 0.15);
+
+  // Master: quiet when stopped, louder at speed
+  var masterVol = G.muted ? 0 : (0.05 + speedNorm * 0.13);
+  if(G.input.U && G.phase === 'playing') masterVol += 0.03;
+  ENGINE.masterGain.gain.setTargetAtTime(masterVol, t, 0.1);
+}
+
+function stopEngine(){
+  if(!ENGINE.started) return;
+  try{
+    if(ENGINE.osc1) ENGINE.osc1.stop();
+    if(ENGINE.osc2) ENGINE.osc2.stop();
+    if(ENGINE.noiseSource) ENGINE.noiseSource.stop();
+  }catch(e){}
+  ENGINE.started = false;
+  ENGINE.osc1 = ENGINE.osc2 = ENGINE.noiseSource = null;
+}
+
+// ---------- SFX (unchanged) ----------
 function beep(f,d,t,v){
-  if(!G.audio) return;
+  if(!G.audio || G.muted) return;
   try{
     var o = G.audio.createOscillator();
     var g = G.audio.createGain();
@@ -450,7 +576,6 @@ function buildLevel(){
 
   G.objs.sort(function(a,b){ return a.z - b.z; });
 
-  // On level 1 fresh game, reset credits & score
   if(G.level === 1 && !G.carryOver){
     G.credits = CFG.START_CREDITS;
     G.score = 0;
@@ -563,15 +688,13 @@ function flashCamera(){ G.flashT = 0.15; sfxCam(); }
 // ============================================================
 // VIEW
 // ============================================================
-var VIEW = { roadW:0, roadX:0, roadCenter:0, playerY:0, pxPerUnit:0.45 };
+var VIEW = { roadW:0, roadX:0, roadCenter:0, playerY:0, pxPerUnit:0.32 };
 
 function computeView(){
   VIEW.roadW = Math.min(cv.width * 0.55, 520);
   VIEW.roadCenter = cv.width / 2;
   VIEW.roadX = VIEW.roadCenter - VIEW.roadW/2;
   VIEW.playerY = cv.height * 0.78;
-  // Lower pxPerUnit means signs approach slower visually
-  VIEW.pxPerUnit = 0.32;
 }
 
 function worldToScreenY(worldZ){
@@ -930,7 +1053,6 @@ function update(dt){
   if(G.input.L) G.px = clamp(G.px - CFG.STEER_SPEED * dt, 0.12, 0.88);
   if(G.input.R) G.px = clamp(G.px + CFG.STEER_SPEED * dt, 0.12, 0.88);
 
-  // Distance advanced per frame — scale this so movement feels fast
   var dz = G.speed * dt * 3.5;
   G.dist += dz;
   G.roadScroll += dz;
@@ -1063,6 +1185,10 @@ function startLevel(){
 function endGame(reason){
   G.phase = 'over';
   G.levelAdvancing = false;
+  // silence engine
+  if(ENGINE.masterGain && G.audio){
+    try{ ENGINE.masterGain.gain.setTargetAtTime(0, G.audio.currentTime, 0.05); }catch(e){}
+  }
   overCredits.textContent = G.credits;
   overScore.textContent = G.score;
   overLevel.textContent = G.level + '/4';
@@ -1127,6 +1253,9 @@ function goHome(){
   G.carryOver = false;
   G.levelAdvancing = false;
   G.levelAdvanceTimer = 0;
+  if(ENGINE.masterGain && G.audio){
+    try{ ENGINE.masterGain.gain.setTargetAtTime(0, G.audio.currentTime, 0.1); }catch(e){}
+  }
 }
 
 // ============================================================
@@ -1139,6 +1268,9 @@ function loop(now){
   G.last = now;
 
   if(G.phase === 'playing') update(dt);
+
+  // update engine sound every frame
+  if(G.phase === 'playing') updateEngineSound();
 
   computeView();
   drawGrassBg();
@@ -1184,11 +1316,27 @@ bindTouch($('tB'), 'D');
 // ============================================================
 // BUTTONS
 // ============================================================
-$('startBtn').addEventListener('click', function(){ initAudio(); startLevel(); });
+$('startBtn').addEventListener('click', function(){
+  initAudio();
+  startEngine();
+  startLevel();
+});
 $('retryBtn').addEventListener('click', restartGame);
 $('homeBtn').addEventListener('click', goHome);
 $('playBtn').addEventListener('click', restartGame);
 $('winHomeBtn').addEventListener('click', goHome);
+
+// Sound toggle
+soundToggle.addEventListener('click', function(){
+  G.muted = !G.muted;
+  soundToggle.textContent = G.muted ? '🔇' : '🔊';
+  soundToggle.classList.toggle('muted', G.muted);
+  if(ENGINE.masterGain && G.audio){
+    try{
+      ENGINE.masterGain.gain.setTargetAtTime(G.muted ? 0 : 0.14, G.audio.currentTime, 0.1);
+    }catch(e){}
+  }
+});
 
 // ============================================================
 // BOOT
